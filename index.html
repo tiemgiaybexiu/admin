@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin - Tiệm giày Bé Xíu</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Quicksand', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            pink: '#F472B6', rose: '#E11D48', softRose: '#FB7185',
+                            dark: '#1E293B', soft: '#FFF1F2', cream: '#FFFDFB', border: '#FFE4E6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #FAFAFA; color: #1E293B; }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body class="antialiased min-h-screen relative">
+
+    <!-- LOGIN MODAL -->
+    <div id="password-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="w-full max-w-xs text-center bg-white rounded-3xl p-6 shadow-2xl animate-fade-up">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-brand-rose flex items-center justify-center mx-auto mb-3 text-2xl">
+                <i class="ph-fill ph-shield-star"></i>
+            </div>
+            <h2 class="text-lg font-extrabold text-brand-dark mb-1">Quản Trị Hệ Thống</h2>
+            <p class="text-[11px] text-gray-500 font-semibold mb-4">Nhập mã PIN truy cập</p>
+            <input type="password" id="pass-input" autocomplete="off" class="w-full bg-rose-50/60 border border-rose-200 rounded-2xl py-2.5 text-center tracking-widest text-xl font-black text-brand-dark outline-none focus:border-brand-rose mb-3" placeholder="••••">
+            <p id="pass-error" class="text-red-600 text-xs mb-3 font-bold hidden">Mã truy cập sai!</p>
+            <button onclick="window.checkAdminPass()" class="w-full py-3 rounded-xl bg-brand-rose hover:bg-rose-700 text-white text-sm font-extrabold transition shadow-md">Đăng Nhập</button>
+        </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="admin-section" class="hidden pb-24">
+        <div class="max-w-5xl mx-auto p-4 sm:p-6">
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-rose-100 sticky top-0 bg-[#FAFAFA]/95 backdrop-blur-md z-20 pt-2">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-brand-rose text-white flex items-center justify-center font-bold text-lg"><i class="ph-fill ph-sliders-horizontal"></i></div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-brand-dark leading-none">Bé Xíu Admin</h2>
+                        <span class="text-[10px] font-bold text-emerald-600">Bot Telegram: 8511070091</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                <div class="bg-gradient-to-br from-rose-500 to-pink-500 text-white p-4 rounded-2xl shadow-sm">
+                    <span class="text-[10px] uppercase font-bold opacity-85">Lượt xem hôm nay</span>
+                    <p class="text-2xl font-black mt-1" id="stat-today">0</p>
+                </div>
+                <div class="bg-brand-dark text-white p-4 rounded-2xl shadow-sm">
+                    <span class="text-[10px] uppercase font-bold opacity-80">Xem tháng này</span>
+                    <p class="text-2xl font-black mt-1" id="stat-month">0</p>
+                </div>
+                <div class="bg-white border border-rose-100 p-4 rounded-2xl">
+                    <span class="text-[10px] uppercase font-extrabold text-gray-500">Giày trong kho</span>
+                    <p class="text-2xl font-black text-brand-rose mt-1" id="stat-total-shoes">0</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl cursor-pointer" onclick="window.switchAdminTab('orders')">
+                    <span class="text-[10px] uppercase font-extrabold text-emerald-700">Đơn hàng mới</span>
+                    <p class="text-2xl font-black text-emerald-700 mt-1" id="stat-total-orders">0</p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mb-6 bg-rose-50 p-1.5 rounded-2xl border border-rose-100">
+                <button onclick="window.switchAdminTab('upload')" id="adm-tab-upload" class="flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-rose text-white shadow-xs transition">1. Đăng Giày & Kho</button>
+                <button onclick="window.switchAdminTab('orders')" id="adm-tab-orders" class="flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-gray-700 hover:text-brand-rose transition">2. Quản lý Đơn hàng (<span id="adm-tab-order-badge">0</span>)</button>
+            </div>
+
+            <!-- TAB 1: UPLOAD -->
+            <div id="admin-tab-content-upload" class="space-y-8">
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-rose-100 shadow-xs">
+                    <h3 class="text-base font-extrabold text-brand-dark mb-4">Đăng Sản Phẩm Mới</h3>
+                    
+                    <div class="mb-5 p-4 bg-rose-50/50 rounded-2xl border border-dashed border-rose-300">
+                        <label class="text-xs font-extrabold text-brand-dark flex items-center gap-1.5 mb-3">
+                            <i class="ph-fill ph-images text-brand-rose text-base"></i> Chọn ảnh ghép vuông tự động:
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-0">
+                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
+                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 1</span>
+                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 0)">
+                                </label>
+                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-0">
+                                <button onclick="window.removeBoxImage(0)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-0">✕</button>
+                            </div>
+                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-1">
+                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
+                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 2</span>
+                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 1)">
+                                </label>
+                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-1">
+                                <button onclick="window.removeBoxImage(1)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-1">✕</button>
+                            </div>
+                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-2">
+                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
+                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 3</span>
+                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 2)">
+                                </label>
+                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-2">
+                                <button onclick="window.removeBoxImage(2)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-2">✕</button>
+                            </div>
+                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-3">
+                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
+                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 4</span>
+                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 3)">
+                                </label>
+                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-3">
+                                <button onclick="window.removeBoxImage(3)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-3">✕</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <label class="bg-gray-800 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 transition">
+                                <i class="ph-bold ph-upload-simple"></i> Chọn 4 ảnh cùng lúc
+                                <input type="file" accept="image/*" multiple class="hidden" onchange="window.handleSelectMultiFiles(this.files)">
+                            </label>
+                            <span id="merge-status-txt" class="text-[10px] font-bold text-gray-500">Cần chọn đủ 4 ảnh để tự ghép</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                        <div class="space-y-2.5">
+                            <div>
+                                <label class="block text-xs font-extrabold text-gray-700 mb-1">Mã Code (Tự tạo):</label>
+                                <div class="flex gap-1.5">
+                                    <input type="text" id="upload-code" readonly class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-black text-brand-rose outline-none">
+                                    <button type="button" onclick="window.regenerateAdminCode()" class="px-3 rounded-xl bg-gray-100 hover:bg-rose-100 text-gray-700 font-extrabold"><i class="ph-bold ph-arrows-clockwise"></i></button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-extrabold text-gray-700 mb-1">Giá bán (VNĐ):</label>
+                                <input type="number" id="upload-price" value="190000" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-black outline-none focus:border-brand-rose">
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-xs font-extrabold text-gray-700">Chọn Size (Tự động tính giá):</label>
+                                <span id="auto-group-badge" class="text-[10px] font-extrabold bg-gray-100 px-2 py-0.5 rounded">...</span>
+                            </div>
+                            <div class="grid grid-cols-5 gap-1.5" id="upload-size-radios">
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="Kid" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">Kid</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="33" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">33</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="34" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">34</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="35" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">35</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="36" onchange="window.updatePriceBySize(this.value)" checked class="hidden"><span class="text-xs font-extrabold text-brand-rose">36</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="37" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">37</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="38" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">38</span></label>
+                            </div>
+                            <input type="text" id="upload-custom-size" placeholder="Hoặc size khác (vd: 39, 40)..." class="w-full bg-white border border-gray-200 rounded-xl mt-2 p-2.5 text-xs font-bold outline-none focus:border-brand-rose" oninput="window.handleCustomSizeInput(this.value)">
+                        </div>
+                    </div>
+
+                    <button id="upload-btn" onclick="window.handleUploadProduct()" class="w-full bg-brand-rose hover:bg-rose-700 text-white font-extrabold text-sm py-3.5 rounded-2xl shadow-md transition">Đăng Giày Lên Kho</button>
+                    <div id="upload-status" class="text-center text-xs mt-2.5 font-extrabold h-4"></div>
+                </div>
+
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-rose-100">
+                    <h3 class="text-base font-extrabold text-brand-dark mb-4">Kho Hàng Hiện Tại</h3>
+                    <div id="admin-product-list" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ĐƠN HÀNG -->
+            <div id="admin-tab-content-orders" class="hidden space-y-4">
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-rose-100">
+                    <h3 class="text-base font-extrabold text-brand-dark mb-4">Danh Sách Khách Chốt & Xin Ảnh</h3>
+                    <div id="admin-orders-list" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (Edit, Delete, Toast) -->
+    <div id="admin-edit-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl">
+            <h3 class="text-base font-extrabold mb-3">Sửa Giày</h3>
+            <div class="space-y-3">
+                <input type="text" id="edit-code" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold">
+                <input type="text" id="edit-size" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold" placeholder="Size">
+                <input type="number" id="edit-price" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold" placeholder="Giá">
+            </div>
+            <div class="flex gap-2 mt-4">
+                <button onclick="document.getElementById('admin-edit-modal').classList.add('hidden')" class="flex-1 py-2 bg-gray-100 rounded-xl text-xs font-bold">Hủy</button>
+                <button onclick="window.saveProductEdit()" class="flex-1 py-2 bg-brand-rose text-white rounded-xl text-xs font-bold">Lưu</button>
+            </div>
+        </div>
+    </div>
+    <div id="custom-confirm-modal" class="fixed inset-0 z-50 hidden bg-black/60 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 text-center shadow-2xl max-w-xs w-full">
+            <h4 class="text-base font-bold text-red-600 mb-4">Xóa sản phẩm này?</h4>
+            <div class="flex gap-2">
+                <button onclick="window.closeConfirmDelete()" class="flex-1 py-2 bg-gray-100 rounded-xl text-xs font-bold">Hủy</button>
+                <button onclick="window.executeDeleteProduct()" class="flex-1 py-2 bg-red-600 text-white rounded-xl text-xs font-bold">Xóa</button>
+            </div>
+        </div>
+    </div>
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const fbP1 = "AIzaSyCVAm"; const fbP2 = "JO1KViXVg3"; const fbP3 = "kizelTp6CZ"; const fbP4 = "AFmJLkKiM";
+        const firebaseConfig = {
+            apiKey: fbP1 + fbP2 + fbP3 + fbP4,
+            authDomain: "donggia-8ef8e.firebaseapp.com", projectId: "donggia-8ef8e",
+            storageBucket: "donggia-8ef8e.firebasestorage.app", messagingSenderId: "186638607487",
+            appId: "1:186638607487:web:9fe74d79311b0f43d70b4a"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const ikPriv1 = "ayTs6CE91Z"; const ikPriv2 = "pBtxpipgz2"; const ikPriv3 = "GmpKdjU=";
+        const IK_PRIVATE_KEY = "private_" + ikPriv1 + ikPriv2 + ikPriv3;
+        const IK_UPLOAD_ENDPOINT = "https://upload.imagekit.io/api/v1/files/upload";
+        const IK_AUTH = "Basic " + btoa(IK_PRIVATE_KEY + ":");
+
+        let firebaseProducts = [];
+        let ordersAndLeads = [];
+        let pendingDeleteId = null;
+        let currentEditId = null;
+        let selectedUploadFiles = [null, null, null, null]; // 4 slots cho 4 ảnh
+
+        const formatMoney = (amount) => Number(amount || 0).toLocaleString('vi-VN') + 'đ';
+        const getOptimizedImageUrl = (url, width = 600) => {
+            if (!url) return '';
+            if (url.includes('ik.imagekit.io') && !url.includes('tr=')) return `${url}?tr=w-${width},f-webp,q-85`;
+            return url;
+        };
+
+        window.generateRandomShoeCode = () => {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            const c1 = chars[Math.floor(Math.random() * chars.length)];
+            const c2 = chars[Math.floor(Math.random() * chars.length)];
+            const digits = String(Math.floor(100 + Math.random() * 900));
+            return `${c1}${c2}${digits}`;
+        };
+        window.regenerateAdminCode = () => { document.getElementById('upload-code').value = window.generateRandomShoeCode(); };
+
+        window.handleSizeAutoGroup = (s) => {
+            const badge = document.getElementById('auto-group-badge');
+            if(s === 'Kid') badge.textContent = "🎒 Kid";
+            else if(Number(s) <= 35) badge.textContent = "🎒 Học sinh";
+            else if(Number(s) >= 39) badge.textContent = "👨 Người lớn";
+            else badge.textContent = "👩 Nữ";
+        };
+
+        window.updatePriceBySize = (size) => {
+            document.getElementById('upload-custom-size').value = '';
+            const pInput = document.getElementById('upload-price');
+            document.querySelectorAll('input[name="upsize"]').forEach(r => {
+                r.nextElementSibling.classList.remove('text-brand-rose');
+                if(r.checked) r.nextElementSibling.classList.add('text-brand-rose');
+            });
+
+            if (size === 'Kid') pInput.value = 150000;
+            else if (Number(size) <= 35) pInput.value = 190000;
+            else pInput.value = 250000;
+            window.handleSizeAutoGroup(size); 
+        };
+
+        window.handleCustomSizeInput = (val) => {
+            document.querySelectorAll('input[name="upsize"]').forEach(r => {
+                r.checked = false; r.nextElementSibling.classList.remove('text-brand-rose');
+            });
+            const s = Number(val);
+            if(s) {
+                const pInput = document.getElementById('upload-price');
+                if (s <= 35) pInput.value = 190000;
+                else pInput.value = 250000;
+            }
+            window.handleSizeAutoGroup(s);
+        };
+
+        const showToast = (title, msg) => {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-brand-dark/95 text-white p-3 rounded-xl shadow-lg animate-fade-up text-xs';
+            toast.innerHTML = `<strong>${title}</strong><br>${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3000);
+        };
+
+        window.checkAdminPass = () => {
+            if (document.getElementById('pass-input').value === '3119') {
+                document.getElementById('password-modal').classList.add('hidden');
+                document.getElementById('admin-section').classList.remove('hidden');
+                window.regenerateAdminCode();
+                window.handleSizeAutoGroup(36);
+                listenRealtimeData();
+                loadStatsForAdmin();
+            } else { document.getElementById('pass-error').classList.remove('hidden'); }
+        };
+        document.getElementById('pass-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') window.checkAdminPass(); });
+
+        window.switchAdminTab = (tab) => {
+            document.getElementById('adm-tab-upload').className = tab === 'upload' ? "flex-1 py-2.5 rounded-xl text-sm font-extrabold bg-brand-rose text-white shadow-xs" : "flex-1 py-2.5 rounded-xl text-sm font-extrabold text-gray-700 hover:text-brand-rose";
+            document.getElementById('adm-tab-orders').className = tab === 'orders' ? "flex-1 py-2.5 rounded-xl text-sm font-extrabold bg-brand-rose text-white shadow-xs" : "flex-1 py-2.5 rounded-xl text-sm font-extrabold text-gray-700 hover:text-brand-rose";
+            document.getElementById('admin-tab-content-upload').classList.toggle('hidden', tab !== 'upload');
+            document.getElementById('admin-tab-content-orders').classList.toggle('hidden', tab !== 'orders');
+        };
+
+        async function loadStatsForAdmin() {
+            try {
+                const vnTime = new Date(new Date().getTime() + (7 * 3600000));
+                const dayKey = `${vnTime.getUTCFullYear()}-${String(vnTime.getUTCMonth() + 1).padStart(2, '0')}-${String(vnTime.getUTCDate()).padStart(2, '0')}`;
+                const monthKey = `${vnTime.getUTCFullYear()}-${String(vnTime.getUTCMonth() + 1).padStart(2, '0')}`;
+                const docSnap = await getDoc(doc(db, 'analytics', 'views'));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('stat-today').innerText = data[dayKey] || 0;
+                    document.getElementById('stat-month').innerText = data[monthKey] || 0;
+                }
+            } catch (e) {}
+        }
+
+        function listenRealtimeData() {
+            onSnapshot(query(collection(db, "products"), orderBy("createdAt", "desc")), (snapshot) => {
+                firebaseProducts = [];
+                snapshot.forEach((d) => firebaseProducts.push({ id: d.id, ...d.data() }));
+                document.getElementById('stat-total-shoes').innerText = firebaseProducts.length;
+                renderAdminProductList();
+            });
+            onSnapshot(query(collection(db, "orders"), orderBy("createdAt", "desc")), (snapshot) => {
+                ordersAndLeads = [];
+                snapshot.forEach((d) => ordersAndLeads.push({ id: d.id, ...d.data() }));
+                document.getElementById('stat-total-orders').innerText = ordersAndLeads.length;
+                document.getElementById('adm-tab-order-badge').innerText = ordersAndLeads.length;
+                renderAdminOrdersList();
+            });
+        }
+
+        // CHỌN & GHÉP ẢNH
+        window.handleSelectImageForBox = (input, index) => {
+            if(input.files && input.files[0]) {
+                selectedUploadFiles[index] = input.files[0];
+                const url = URL.createObjectURL(input.files[0]);
+                document.getElementById(`preview-${index}`).src = url;
+                document.getElementById(`preview-${index}`).classList.remove('hidden');
+                document.getElementById(`del-${index}`).classList.remove('hidden');
+                checkMergeReady();
+            }
+        };
+        window.handleSelectMultiFiles = (files) => {
+            if(!files || files.length === 0) return;
+            const limit = Math.min(files.length, 4);
+            for(let i=0; i<limit; i++) {
+                selectedUploadFiles[i] = files[i];
+                document.getElementById(`preview-${i}`).src = URL.createObjectURL(files[i]);
+                document.getElementById(`preview-${i}`).classList.remove('hidden');
+                document.getElementById(`del-${i}`).classList.remove('hidden');
+            }
+            checkMergeReady();
+        };
+        window.removeBoxImage = (idx) => {
+            selectedUploadFiles[idx] = null;
+            document.getElementById(`preview-${idx}`).classList.add('hidden');
+            document.getElementById(`del-${idx}`).classList.add('hidden');
+            document.getElementById(`box-img-${idx}`).querySelector('input').value = '';
+            checkMergeReady();
+        };
+        const checkMergeReady = () => {
+            const count = selectedUploadFiles.filter(f => f).length;
+            const txt = document.getElementById('merge-status-txt');
+            if(count === 4) { txt.innerText = "✓ Sẵn sàng ghép vuông"; txt.className = "text-[10px] font-bold text-emerald-600"; }
+            else { txt.innerText = `Đã chọn ${count}/4 ảnh`; txt.className = "text-[10px] font-bold text-brand-rose"; }
+        };
+
+        const mergeFourImages = async (files) => {
+            return new Promise(async (resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 1200; canvas.height = 1200;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, 1200, 1200);
+
+                const loadImg = (f) => new Promise((res, rej) => {
+                    const img = new Image(); img.onload = () => res(img); img.onerror = rej; img.src = URL.createObjectURL(f);
+                });
+
+                try {
+                    const imgs = await Promise.all(files.map(f => loadImg(f)));
+                    const drawCover = (img, x, y, w, h) => {
+                        const ratio = Math.max(w / img.width, h / img.height);
+                        const nw = img.width * ratio; const nh = img.height * ratio;
+                        const nx = x + (w - nw) / 2; const ny = y + (h - nh) / 2;
+                        ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+                        ctx.drawImage(img, nx, ny, nw, nh); ctx.restore();
+                    };
+                    drawCover(imgs[0], 0, 0, 600, 600);
+                    drawCover(imgs[1], 600, 0, 600, 600);
+                    drawCover(imgs[2], 0, 600, 600, 600);
+                    drawCover(imgs[3], 600, 600, 600, 600);
+                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 4;
+                    ctx.beginPath(); ctx.moveTo(600, 0); ctx.lineTo(600, 1200);
+                    ctx.moveTo(0, 600); ctx.lineTo(1200, 600); ctx.stroke();
+                    canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.85);
+                } catch (e) { reject(e); }
+            });
+        };
+
+        window.handleUploadProduct = async () => {
+            if(selectedUploadFiles.filter(f=>f).length !== 4) { showToast('Thiếu ảnh', 'Phải chọn đủ 4 ảnh để ghép!'); return; }
+            
+            const code = document.getElementById('upload-code').value || window.generateRandomShoeCode();
+            const customSize = document.getElementById('upload-custom-size').value.trim();
+            const sizeRadio = document.querySelector('input[name="upsize"]:checked');
+            const size = customSize ? customSize : (sizeRadio ? sizeRadio.value : '36');
+            const price = parseInt(document.getElementById('upload-price').value);
+            const btn = document.getElementById('upload-btn');
+            
+            btn.disabled = true; btn.innerText = "Đang xử lý...";
+            try {
+                const blob = await mergeFourImages(selectedUploadFiles);
+                const fd = new FormData();
+                fd.append("file", blob, `giay-${code}.jpg`); fd.append("fileName", `giay-${code}.jpg`); fd.append("folder", "/giay2hand");
+                
+                const res = await fetch(IK_UPLOAD_ENDPOINT, { method: "POST", headers: { "Authorization": IK_AUTH }, body: fd });
+                const ikData = await res.json();
+                
+                await addDoc(collection(db, "products"), {
+                    code, size, price, imageUrl: ikData.url, images: [ikData.url],
+                    isSold: false, createdAt: serverTimestamp()
+                });
+                showToast('Đăng thành công!', `Mã #${code} đã lên kho.`);
+                window.regenerateAdminCode();
+                for(let i=0; i<4; i++) window.removeBoxImage(i);
+            } catch (e) { showToast('Lỗi', e.message); }
+            btn.disabled = false; btn.innerText = "Đăng Giày Lên Kho";
+        };
+
+        const renderAdminProductList = () => {
+            const c = document.getElementById('admin-product-list');
+            c.innerHTML = '';
+            firebaseProducts.forEach(item => {
+                c.insertAdjacentHTML('beforeend', `
+                    <div class="bg-rose-50/50 p-2 rounded-xl border border-rose-100 flex flex-col">
+                        <img src="${getOptimizedImageUrl(item.imageUrl, 200)}" class="w-full aspect-square object-cover rounded-lg bg-white mb-2">
+                        <div class="flex items-center justify-between mb-1">
+                            <h5 class="text-xs font-black">#${item.code}</h5>
+                            <span class="text-[10px] font-bold text-brand-rose bg-white px-1.5 rounded">Sz ${item.size}</span>
+                        </div>
+                        <p class="text-xs font-black text-brand-rose mb-2">${formatMoney(item.price)}</p>
+                        <div class="grid grid-cols-3 gap-1 mt-auto">
+                            <button onclick="window.toggleSold('${item.id}', ${item.isSold})" class="py-1 rounded text-[10px] font-bold ${item.isSold ? 'bg-gray-200 text-gray-700' : 'bg-emerald-100 text-emerald-800'}">${item.isSold ? 'Mở' : 'Bán'}</button>
+                            <button onclick="window.editProduct('${item.id}', '${item.code}', '${item.size}', ${item.price})" class="py-1 bg-blue-100 text-blue-700 rounded text-[10px] font-bold">Sửa</button>
+                            <button onclick="window.requestDelete('${item.id}')" class="py-1 bg-red-100 text-red-700 rounded text-[10px] font-bold">Xóa</button>
+                        </div>
+                    </div>`);
+            });
+        };
+
+        window.toggleSold = async (id, current) => { await updateDoc(doc(db, "products", id), { isSold: !current }); };
+        window.editProduct = (id, c, s, p) => {
+            currentEditId = id; document.getElementById('edit-code').value = c; document.getElementById('edit-size').value = s;
+            document.getElementById('edit-price').value = p; document.getElementById('admin-edit-modal').classList.remove('hidden');
+        };
+        window.saveProductEdit = async () => {
+            if(!currentEditId) return;
+            const c = document.getElementById('edit-code').value; const s = document.getElementById('edit-size').value;
+            const p = parseInt(document.getElementById('edit-price').value);
+            await updateDoc(doc(db, "products", currentEditId), { code: c, size: s, price: p });
+            document.getElementById('admin-edit-modal').classList.add('hidden'); showToast('Đã lưu', 'Cập nhật thành công');
+        };
+        window.requestDelete = (id) => { pendingDeleteId = id; document.getElementById('custom-confirm-modal').classList.remove('hidden'); };
+        window.closeConfirmDelete = () => { pendingDeleteId = null; document.getElementById('custom-confirm-modal').classList.add('hidden'); };
+        window.executeDeleteProduct = async () => {
+            if(pendingDeleteId) { await deleteDoc(doc(db, "products", pendingDeleteId)); window.closeConfirmDelete(); showToast('Đã xóa', 'Sản phẩm đã xóa'); }
+        };
+
+        window.updateOrderStatus = async (id, st) => { await updateDoc(doc(db, "orders", id), { status: st }); };
+        window.updateOrderNote = async (id) => {
+            const note = document.getElementById(`note-${id}`).value;
+            await updateDoc(doc(db, "orders", id), { adminNote: note }); showToast('Đã lưu Note', '');
+        };
+        window.deleteOrder = async (id) => { if(confirm("Xóa đơn này?")) await deleteDoc(doc(db, "orders", id)); };
+
+        const renderAdminOrdersList = () => {
+            const c = document.getElementById('admin-orders-list');
+            c.innerHTML = ordersAndLeads.length === 0 ? '<p class="text-xs text-gray-500">Chưa có đơn hàng.</p>' : '';
+            ordersAndLeads.forEach(ord => {
+                const isZalo = ord.type === 'ZALO_CONSULT';
+                const imgUrl = ord.productImage ? getOptimizedImageUrl(ord.productImage, 150) : '';
+                c.insertAdjacentHTML('beforeend', `
+                    <div class="p-3 rounded-2xl border border-rose-100 bg-rose-50 flex gap-3">
+                        ${imgUrl ? `<img src="${imgUrl}" class="w-16 h-16 rounded-xl object-cover bg-white shrink-0">` : ''}
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <div>
+                                    <span class="text-[10px] font-bold ${isZalo ? 'text-blue-600 bg-blue-100' : 'text-emerald-600 bg-emerald-100'} px-2 py-0.5 rounded">${isZalo ? 'Zalo' : 'Chốt'}</span>
+                                    <span class="text-xs font-bold ml-1">${ord.customerName}</span>
+                                </div>
+                                <div class="flex gap-1">
+                                    ${ord.status === 'CONFIRMED' ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded">Đã XN</span>' : ''}
+                                    ${(!ord.status || ord.status === 'NEW') ? `<button onclick="window.updateOrderStatus('${ord.id}', 'CONFIRMED')" class="text-[10px] bg-emerald-500 text-white px-2 py-1 rounded">Xác nhận</button>` : ''}
+                                    <button onclick="window.deleteOrder('${ord.id}')" class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded">Xóa</button>
+                                </div>
+                            </div>
+                            <p class="text-[11px] font-bold text-brand-rose">${ord.customerPhone} ${ord.customerAddress ? '- ' + ord.customerAddress : ''}</p>
+                            <p class="text-[11px] text-gray-700 truncate">${ord.productName} - ${formatMoney(ord.totalPrice)}</p>
+                            <div class="flex gap-2 mt-2">
+                                <input type="text" id="note-${ord.id}" value="${ord.adminNote || ''}" class="flex-1 text-[11px] px-2 py-1 rounded border border-gray-200">
+                                <button onclick="window.updateOrderNote('${ord.id}')" class="text-[10px] bg-gray-200 px-2 rounded">Lưu note</button>
+                            </div>
+                        </div>
+                    </div>`);
+            });
+        };
+    </script>
+</body>
+</html>
