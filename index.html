@@ -30,6 +30,7 @@
         body { font-family: 'Quicksand', sans-serif; background-color: #FAFAFA; color: #1E293B; }
         @keyframes fadeUp { 0% { opacity: 0; transform: translateY(12px); } 100% { opacity: 1; transform: translateY(0); } }
         .animate-fade-up { animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        label, button { touch-action: manipulation; }
     </style>
 </head>
 <body class="antialiased min-h-screen relative">
@@ -41,7 +42,7 @@
                 <i class="ph-fill ph-shield-star"></i>
             </div>
             <h2 class="text-lg font-extrabold text-brand-dark mb-1">Quản Trị Hệ Thống</h2>
-            <p class="text-[11px] text-gray-500 font-semibold mb-4">Nhập mã PIN truy cập</p>
+            <p class="text-[11px] text-gray-500 font-semibold mb-4">Mã PIN mặc định: 3119</p>
             <input type="password" id="pass-input" autocomplete="off" class="w-full bg-rose-50/60 border border-rose-200 rounded-2xl py-2.5 text-center tracking-widest text-xl font-black text-brand-dark outline-none focus:border-brand-rose mb-3" placeholder="••••">
             <p id="pass-error" class="text-red-600 text-xs mb-3 font-bold hidden">Mã truy cập sai!</p>
             <button onclick="window.checkAdminPass()" class="w-full py-3 rounded-xl bg-brand-rose hover:bg-rose-700 text-white text-sm font-extrabold transition shadow-md">Đăng Nhập</button>
@@ -56,12 +57,11 @@
                     <div class="w-9 h-9 rounded-xl bg-brand-rose text-white flex items-center justify-center font-bold text-lg"><i class="ph-fill ph-sliders-horizontal"></i></div>
                     <div>
                         <h2 class="text-lg sm:text-xl font-extrabold text-brand-dark leading-none">Bé Xíu Admin</h2>
-                        <span class="text-[10px] font-bold text-emerald-600">Bot Telegram: 8511070091</span>
+                        <span class="text-[10px] font-bold text-emerald-600">Bot Telegram: Hoạt động (8511070091)</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Stats -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                 <div class="bg-gradient-to-br from-rose-500 to-pink-500 text-white p-4 rounded-2xl shadow-sm">
                     <span class="text-[10px] uppercase font-bold opacity-85">Lượt xem hôm nay</span>
@@ -83,7 +83,7 @@
 
             <div class="flex gap-2 mb-6 bg-rose-50 p-1.5 rounded-2xl border border-rose-100">
                 <button onclick="window.switchAdminTab('upload')" id="adm-tab-upload" class="flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-rose text-white shadow-xs transition">1. Đăng Giày & Kho</button>
-                <button onclick="window.switchAdminTab('orders')" id="adm-tab-orders" class="flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-gray-700 hover:text-brand-rose transition">2. Quản lý Đơn hàng (<span id="adm-tab-order-badge">0</span>)</button>
+                <button onclick="window.switchAdminTab('orders')" id="adm-tab-orders" class="flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-gray-700 hover:text-brand-rose transition">2. Đơn hàng (<span id="adm-tab-order-badge">0</span>)</button>
             </div>
 
             <!-- TAB 1: UPLOAD -->
@@ -91,50 +91,21 @@
                 <div class="bg-white p-4 sm:p-6 rounded-3xl border border-rose-100 shadow-xs">
                     <h3 class="text-base font-extrabold text-brand-dark mb-4">Đăng Sản Phẩm Mới</h3>
                     
-                    <div class="mb-5 p-4 bg-rose-50/50 rounded-2xl border border-dashed border-rose-300">
-                        <label class="text-xs font-extrabold text-brand-dark flex items-center gap-1.5 mb-3">
-                            <i class="ph-fill ph-images text-brand-rose text-base"></i> Chọn ảnh ghép vuông tự động:
+                    <div class="mb-5 p-4 bg-rose-50/50 rounded-2xl border border-dashed border-rose-300 text-center">
+                        <label class="text-xs font-extrabold text-brand-dark flex items-center justify-center gap-1.5 mb-3">
+                            <i class="ph-fill ph-image text-brand-rose text-base"></i> Chọn ảnh sản phẩm
                         </label>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
-                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-0">
-                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
-                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 1</span>
-                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 0)">
-                                </label>
-                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-0">
-                                <button onclick="window.removeBoxImage(0)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-0">✕</button>
-                            </div>
-                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-1">
-                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
-                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 2</span>
-                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 1)">
-                                </label>
-                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-1">
-                                <button onclick="window.removeBoxImage(1)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-1">✕</button>
-                            </div>
-                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-2">
-                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
-                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 3</span>
-                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 2)">
-                                </label>
-                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-2">
-                                <button onclick="window.removeBoxImage(2)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-2">✕</button>
-                            </div>
-                            <div class="aspect-square bg-white border border-gray-200 rounded-xl relative overflow-hidden" id="box-img-3">
-                                <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50">
-                                    <i class="ph-bold ph-plus text-gray-400"></i><span class="text-[10px] font-bold text-gray-500">Ảnh 4</span>
-                                    <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImageForBox(this, 3)">
-                                </label>
-                                <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-3">
-                                <button onclick="window.removeBoxImage(3)" class="hidden absolute top-1 right-1 z-20 w-6 h-6 bg-black/60 text-white rounded-full flex justify-center items-center text-xs" id="del-3">✕</button>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <label class="bg-gray-800 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 transition">
-                                <i class="ph-bold ph-upload-simple"></i> Chọn 4 ảnh cùng lúc
-                                <input type="file" accept="image/*" multiple class="hidden" onchange="window.handleSelectMultiFiles(this.files)">
+                        
+                        <div class="aspect-square bg-white border border-gray-200 rounded-2xl relative overflow-hidden w-full max-w-[240px] mx-auto shadow-sm group" id="box-img-single">
+                            <label class="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition">
+                                <div class="w-12 h-12 rounded-full bg-rose-50 text-brand-rose flex items-center justify-center mb-2">
+                                    <i class="ph-bold ph-plus text-xl"></i>
+                                </div>
+                                <span class="text-xs font-bold text-gray-500 group-hover:text-brand-rose transition">Tải ảnh lên</span>
+                                <input type="file" accept="image/*" class="hidden" onchange="window.handleSelectImage(this)">
                             </label>
-                            <span id="merge-status-txt" class="text-[10px] font-bold text-gray-500">Cần chọn đủ 4 ảnh để tự ghép</span>
+                            <img src="" class="w-full h-full object-cover hidden absolute inset-0 z-10" id="preview-single">
+                            <button onclick="window.removeImage()" class="hidden absolute top-2 right-2 z-20 w-8 h-8 bg-black/60 text-white rounded-full flex justify-center items-center text-sm shadow-md hover:bg-black/80 transition" id="del-single"><i class="ph-bold ph-trash"></i></button>
                         </div>
                     </div>
 
@@ -148,26 +119,32 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-extrabold text-gray-700 mb-1">Giá bán (VNĐ):</label>
-                                <input type="number" id="upload-price" value="190000" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-black outline-none focus:border-brand-rose">
+                                <label class="block text-xs font-extrabold text-gray-700 mb-1">Giá bán (Tự nhảy theo Size):</label>
+                                <input type="number" id="upload-price" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2.5 text-sm font-black outline-none focus:border-brand-rose">
                             </div>
                         </div>
 
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <label class="text-xs font-extrabold text-gray-700">Chọn Size (Tự động tính giá):</label>
+                                <label class="text-xs font-extrabold text-gray-700">Chọn Size / Nửa Size:</label>
                                 <span id="auto-group-badge" class="text-[10px] font-extrabold bg-gray-100 px-2 py-0.5 rounded">...</span>
                             </div>
-                            <div class="grid grid-cols-5 gap-1.5" id="upload-size-radios">
-                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="Kid" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">Kid</span></label>
-                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="33" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">33</span></label>
-                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="34" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">34</span></label>
-                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="35" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">35</span></label>
-                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="36" onchange="window.updatePriceBySize(this.value)" checked class="hidden"><span class="text-xs font-extrabold text-brand-rose">36</span></label>
-                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="37" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">37</span></label>
-                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-2 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="38" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-xs font-extrabold">38</span></label>
+                            <div class="grid grid-cols-4 sm:grid-cols-5 gap-1.5" id="upload-size-radios">
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="Kid" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">Kid</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="33" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">33</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="33.5" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">33.5</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="34" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">34</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="34.5" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">34.5</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="35" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">35</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="35.5" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">35.5</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="36" onchange="window.updatePriceBySize(this.value)" checked class="hidden"><span class="text-[11px] font-extrabold text-brand-rose">36</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="36.5" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">36.5</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="37" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">37</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="37.5" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">37.5</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="38" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">38</span></label>
+                                <label class="flex items-center justify-center cursor-pointer bg-gray-50 py-1.5 rounded-lg border border-gray-200 hover:border-brand-rose"><input type="radio" name="upsize" value="38.5" onchange="window.updatePriceBySize(this.value)" class="hidden"><span class="text-[11px] font-extrabold">38.5</span></label>
                             </div>
-                            <input type="text" id="upload-custom-size" placeholder="Hoặc size khác (vd: 39, 40)..." class="w-full bg-white border border-gray-200 rounded-xl mt-2 p-2.5 text-xs font-bold outline-none focus:border-brand-rose" oninput="window.handleCustomSizeInput(this.value)">
+                            <input type="text" id="upload-custom-size" placeholder="Hoặc size người lớn (vd: 39, 40)..." class="w-full bg-white border border-gray-200 rounded-xl mt-2 p-2 text-xs font-bold outline-none focus:border-brand-rose" oninput="window.handleCustomSizeInput(this.value)">
                         </div>
                     </div>
 
@@ -184,7 +161,7 @@
             <!-- TAB 2: ĐƠN HÀNG -->
             <div id="admin-tab-content-orders" class="hidden space-y-4">
                 <div class="bg-white p-4 sm:p-6 rounded-3xl border border-rose-100">
-                    <h3 class="text-base font-extrabold text-brand-dark mb-4">Danh Sách Khách Chốt & Xin Ảnh</h3>
+                    <h3 class="text-base font-extrabold text-brand-dark mb-4">Danh Sách Khách Đặt Hàng & Tư Vấn</h3>
                     <div id="admin-orders-list" class="space-y-3"></div>
                 </div>
             </div>
@@ -197,7 +174,7 @@
             <h3 class="text-base font-extrabold mb-3">Sửa Giày</h3>
             <div class="space-y-3">
                 <input type="text" id="edit-code" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold">
-                <input type="text" id="edit-size" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold" placeholder="Size">
+                <input type="text" id="edit-size" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold" placeholder="Size (Ví dụ: 36.5)">
                 <input type="number" id="edit-price" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-2 text-xs font-bold" placeholder="Giá">
             </div>
             <div class="flex gap-2 mt-4">
@@ -240,7 +217,7 @@
         let ordersAndLeads = [];
         let pendingDeleteId = null;
         let currentEditId = null;
-        let selectedUploadFiles = [null, null, null, null]; // 4 slots cho 4 ảnh
+        let selectedUploadFile = null;
 
         const formatMoney = (amount) => Number(amount || 0).toLocaleString('vi-VN') + 'đ';
         const getOptimizedImageUrl = (url, width = 600) => {
@@ -261,7 +238,7 @@
         window.handleSizeAutoGroup = (s) => {
             const badge = document.getElementById('auto-group-badge');
             if(s === 'Kid') badge.textContent = "🎒 Kid";
-            else if(Number(s) <= 35) badge.textContent = "🎒 Học sinh";
+            else if(Number(s) <= 35.5) badge.textContent = "🎒 Học sinh";
             else if(Number(s) >= 39) badge.textContent = "👨 Người lớn";
             else badge.textContent = "👩 Nữ";
         };
@@ -275,7 +252,7 @@
             });
 
             if (size === 'Kid') pInput.value = 150000;
-            else if (Number(size) <= 35) pInput.value = 190000;
+            else if (Number(size) <= 35.5) pInput.value = 190000;
             else pInput.value = 250000;
             window.handleSizeAutoGroup(size); 
         };
@@ -287,7 +264,7 @@
             const s = Number(val);
             if(s) {
                 const pInput = document.getElementById('upload-price');
-                if (s <= 35) pInput.value = 190000;
+                if (s <= 35.5) pInput.value = 190000;
                 else pInput.value = 250000;
             }
             window.handleSizeAutoGroup(s);
@@ -307,16 +284,15 @@
                 document.getElementById('password-modal').classList.add('hidden');
                 document.getElementById('admin-section').classList.remove('hidden');
                 window.regenerateAdminCode();
-                window.handleSizeAutoGroup(36);
+                window.updatePriceBySize(36);
                 listenRealtimeData();
                 loadStatsForAdmin();
             } else { document.getElementById('pass-error').classList.remove('hidden'); }
         };
-        document.getElementById('pass-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') window.checkAdminPass(); });
 
         window.switchAdminTab = (tab) => {
-            document.getElementById('adm-tab-upload').className = tab === 'upload' ? "flex-1 py-2.5 rounded-xl text-sm font-extrabold bg-brand-rose text-white shadow-xs" : "flex-1 py-2.5 rounded-xl text-sm font-extrabold text-gray-700 hover:text-brand-rose";
-            document.getElementById('adm-tab-orders').className = tab === 'orders' ? "flex-1 py-2.5 rounded-xl text-sm font-extrabold bg-brand-rose text-white shadow-xs" : "flex-1 py-2.5 rounded-xl text-sm font-extrabold text-gray-700 hover:text-brand-rose";
+            document.getElementById('adm-tab-upload').className = tab === 'upload' ? "flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-rose text-white shadow-xs transition" : "flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-gray-700 hover:text-brand-rose transition";
+            document.getElementById('adm-tab-orders').className = tab === 'orders' ? "flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-brand-rose text-white shadow-xs transition" : "flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-gray-700 hover:text-brand-rose transition";
             document.getElementById('admin-tab-content-upload').classList.toggle('hidden', tab !== 'upload');
             document.getElementById('admin-tab-content-orders').classList.toggle('hidden', tab !== 'orders');
         };
@@ -351,76 +327,26 @@
             });
         }
 
-        // CHỌN & GHÉP ẢNH
-        window.handleSelectImageForBox = (input, index) => {
+        // CHỌN 1 ẢNH (Bỏ tính năng ghép)
+        window.handleSelectImage = (input) => {
             if(input.files && input.files[0]) {
-                selectedUploadFiles[index] = input.files[0];
+                selectedUploadFile = input.files[0];
                 const url = URL.createObjectURL(input.files[0]);
-                document.getElementById(`preview-${index}`).src = url;
-                document.getElementById(`preview-${index}`).classList.remove('hidden');
-                document.getElementById(`del-${index}`).classList.remove('hidden');
-                checkMergeReady();
+                document.getElementById(`preview-single`).src = url;
+                document.getElementById(`preview-single`).classList.remove('hidden');
+                document.getElementById(`del-single`).classList.remove('hidden');
             }
         };
-        window.handleSelectMultiFiles = (files) => {
-            if(!files || files.length === 0) return;
-            const limit = Math.min(files.length, 4);
-            for(let i=0; i<limit; i++) {
-                selectedUploadFiles[i] = files[i];
-                document.getElementById(`preview-${i}`).src = URL.createObjectURL(files[i]);
-                document.getElementById(`preview-${i}`).classList.remove('hidden');
-                document.getElementById(`del-${i}`).classList.remove('hidden');
-            }
-            checkMergeReady();
-        };
-        window.removeBoxImage = (idx) => {
-            selectedUploadFiles[idx] = null;
-            document.getElementById(`preview-${idx}`).classList.add('hidden');
-            document.getElementById(`del-${idx}`).classList.add('hidden');
-            document.getElementById(`box-img-${idx}`).querySelector('input').value = '';
-            checkMergeReady();
-        };
-        const checkMergeReady = () => {
-            const count = selectedUploadFiles.filter(f => f).length;
-            const txt = document.getElementById('merge-status-txt');
-            if(count === 4) { txt.innerText = "✓ Sẵn sàng ghép vuông"; txt.className = "text-[10px] font-bold text-emerald-600"; }
-            else { txt.innerText = `Đã chọn ${count}/4 ảnh`; txt.className = "text-[10px] font-bold text-brand-rose"; }
-        };
-
-        const mergeFourImages = async (files) => {
-            return new Promise(async (resolve, reject) => {
-                const canvas = document.createElement('canvas');
-                canvas.width = 1200; canvas.height = 1200;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, 1200, 1200);
-
-                const loadImg = (f) => new Promise((res, rej) => {
-                    const img = new Image(); img.onload = () => res(img); img.onerror = rej; img.src = URL.createObjectURL(f);
-                });
-
-                try {
-                    const imgs = await Promise.all(files.map(f => loadImg(f)));
-                    const drawCover = (img, x, y, w, h) => {
-                        const ratio = Math.max(w / img.width, h / img.height);
-                        const nw = img.width * ratio; const nh = img.height * ratio;
-                        const nx = x + (w - nw) / 2; const ny = y + (h - nh) / 2;
-                        ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
-                        ctx.drawImage(img, nx, ny, nw, nh); ctx.restore();
-                    };
-                    drawCover(imgs[0], 0, 0, 600, 600);
-                    drawCover(imgs[1], 600, 0, 600, 600);
-                    drawCover(imgs[2], 0, 600, 600, 600);
-                    drawCover(imgs[3], 600, 600, 600, 600);
-                    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 4;
-                    ctx.beginPath(); ctx.moveTo(600, 0); ctx.lineTo(600, 1200);
-                    ctx.moveTo(0, 600); ctx.lineTo(1200, 600); ctx.stroke();
-                    canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.85);
-                } catch (e) { reject(e); }
-            });
+        
+        window.removeImage = () => {
+            selectedUploadFile = null;
+            document.getElementById(`preview-single`).classList.add('hidden');
+            document.getElementById(`del-single`).classList.add('hidden');
+            document.getElementById(`box-img-single`).querySelector('input').value = '';
         };
 
         window.handleUploadProduct = async () => {
-            if(selectedUploadFiles.filter(f=>f).length !== 4) { showToast('Thiếu ảnh', 'Phải chọn đủ 4 ảnh để ghép!'); return; }
+            if(!selectedUploadFile) { showToast('Thiếu ảnh', 'Vui lòng chọn 1 ảnh để đăng!'); return; }
             
             const code = document.getElementById('upload-code').value || window.generateRandomShoeCode();
             const customSize = document.getElementById('upload-custom-size').value.trim();
@@ -429,11 +355,12 @@
             const price = parseInt(document.getElementById('upload-price').value);
             const btn = document.getElementById('upload-btn');
             
-            btn.disabled = true; btn.innerText = "Đang xử lý...";
+            btn.disabled = true; btn.innerText = "Đang tải ảnh lên...";
             try {
-                const blob = await mergeFourImages(selectedUploadFiles);
                 const fd = new FormData();
-                fd.append("file", blob, `giay-${code}.jpg`); fd.append("fileName", `giay-${code}.jpg`); fd.append("folder", "/giay2hand");
+                fd.append("file", selectedUploadFile, `giay-${code}.jpg`); 
+                fd.append("fileName", `giay-${code}.jpg`); 
+                fd.append("folder", "/giay2hand");
                 
                 const res = await fetch(IK_UPLOAD_ENDPOINT, { method: "POST", headers: { "Authorization": IK_AUTH }, body: fd });
                 const ikData = await res.json();
@@ -444,7 +371,7 @@
                 });
                 showToast('Đăng thành công!', `Mã #${code} đã lên kho.`);
                 window.regenerateAdminCode();
-                for(let i=0; i<4; i++) window.removeBoxImage(i);
+                window.removeImage();
             } catch (e) { showToast('Lỗi', e.message); }
             btn.disabled = false; btn.innerText = "Đăng Giày Lên Kho";
         };
@@ -458,11 +385,11 @@
                         <img src="${getOptimizedImageUrl(item.imageUrl, 200)}" class="w-full aspect-square object-cover rounded-lg bg-white mb-2">
                         <div class="flex items-center justify-between mb-1">
                             <h5 class="text-xs font-black">#${item.code}</h5>
-                            <span class="text-[10px] font-bold text-brand-rose bg-white px-1.5 rounded">Sz ${item.size}</span>
+                            <span class="text-[10px] font-bold text-brand-rose bg-white px-1.5 rounded border border-rose-100">Sz ${item.size}</span>
                         </div>
                         <p class="text-xs font-black text-brand-rose mb-2">${formatMoney(item.price)}</p>
                         <div class="grid grid-cols-3 gap-1 mt-auto">
-                            <button onclick="window.toggleSold('${item.id}', ${item.isSold})" class="py-1 rounded text-[10px] font-bold ${item.isSold ? 'bg-gray-200 text-gray-700' : 'bg-emerald-100 text-emerald-800'}">${item.isSold ? 'Mở' : 'Bán'}</button>
+                            <button onclick="window.toggleSold('${item.id}', ${item.isSold})" class="py-1 rounded text-[10px] font-bold ${item.isSold ? 'bg-gray-200 text-gray-700' : 'bg-emerald-100 text-emerald-800'}">${item.isSold ? 'Mở' : 'Đã bán'}</button>
                             <button onclick="window.editProduct('${item.id}', '${item.code}', '${item.size}', ${item.price})" class="py-1 bg-blue-100 text-blue-700 rounded text-[10px] font-bold">Sửa</button>
                             <button onclick="window.requestDelete('${item.id}')" class="py-1 bg-red-100 text-red-700 rounded text-[10px] font-bold">Xóa</button>
                         </div>
@@ -493,7 +420,7 @@
             const note = document.getElementById(`note-${id}`).value;
             await updateDoc(doc(db, "orders", id), { adminNote: note }); showToast('Đã lưu Note', '');
         };
-        window.deleteOrder = async (id) => { if(confirm("Xóa đơn này?")) await deleteDoc(doc(db, "orders", id)); };
+        window.deleteOrder = async (id) => { if(confirm("Xóa đơn này khỏi lịch sử?")) await deleteDoc(doc(db, "orders", id)); };
 
         const renderAdminOrdersList = () => {
             const c = document.getElementById('admin-orders-list');
@@ -503,24 +430,25 @@
                 const imgUrl = ord.productImage ? getOptimizedImageUrl(ord.productImage, 150) : '';
                 c.insertAdjacentHTML('beforeend', `
                     <div class="p-3 rounded-2xl border border-rose-100 bg-rose-50 flex gap-3">
-                        ${imgUrl ? `<img src="${imgUrl}" class="w-16 h-16 rounded-xl object-cover bg-white shrink-0">` : ''}
+                        ${imgUrl ? `<img src="${imgUrl}" class="w-20 h-20 rounded-xl object-cover bg-white shrink-0 border border-rose-100">` : ''}
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between mb-1">
                                 <div>
-                                    <span class="text-[10px] font-bold ${isZalo ? 'text-blue-600 bg-blue-100' : 'text-emerald-600 bg-emerald-100'} px-2 py-0.5 rounded">${isZalo ? 'Zalo' : 'Chốt'}</span>
+                                    <span class="text-[10px] font-bold ${isZalo ? 'text-blue-600 bg-blue-100' : 'text-emerald-600 bg-emerald-100'} px-2 py-0.5 rounded">${isZalo ? 'Tư vấn' : 'Chốt đơn'}</span>
                                     <span class="text-xs font-bold ml-1">${ord.customerName}</span>
                                 </div>
-                                <div class="flex gap-1">
-                                    ${ord.status === 'CONFIRMED' ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded">Đã XN</span>' : ''}
-                                    ${(!ord.status || ord.status === 'NEW') ? `<button onclick="window.updateOrderStatus('${ord.id}', 'CONFIRMED')" class="text-[10px] bg-emerald-500 text-white px-2 py-1 rounded">Xác nhận</button>` : ''}
-                                    <button onclick="window.deleteOrder('${ord.id}')" class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded">Xóa</button>
+                                <div class="flex gap-1 flex-wrap justify-end max-w-[120px]">
+                                    ${ord.status === 'CONFIRMED' ? '<span class="text-[10px] bg-emerald-500 text-white px-2 py-1 rounded font-bold">Đã XN</span>' : ''}
+                                    ${(!ord.status || ord.status === 'NEW') ? `<button onclick="window.updateOrderStatus('${ord.id}', 'CONFIRMED')" class="text-[10px] font-bold bg-emerald-500 text-white px-2 py-1 rounded">Xác nhận</button>` : ''}
+                                    <button onclick="window.deleteOrder('${ord.id}')" class="text-[10px] bg-red-100 text-red-600 px-2 py-1 rounded font-bold">Xóa</button>
                                 </div>
                             </div>
-                            <p class="text-[11px] font-bold text-brand-rose">${ord.customerPhone} ${ord.customerAddress ? '- ' + ord.customerAddress : ''}</p>
-                            <p class="text-[11px] text-gray-700 truncate">${ord.productName} - ${formatMoney(ord.totalPrice)}</p>
+                            <p class="text-xs font-black text-brand-rose my-1">${ord.customerPhone}</p>
+                            <p class="text-[11px] text-gray-700 leading-tight">${ord.customerAddress || 'Khách nhắn Zalo'}</p>
+                            <p class="text-[11px] font-bold text-gray-800 mt-1 truncate">${ord.productName} - ${formatMoney(ord.totalPrice)}</p>
                             <div class="flex gap-2 mt-2">
-                                <input type="text" id="note-${ord.id}" value="${ord.adminNote || ''}" class="flex-1 text-[11px] px-2 py-1 rounded border border-gray-200">
-                                <button onclick="window.updateOrderNote('${ord.id}')" class="text-[10px] bg-gray-200 px-2 rounded">Lưu note</button>
+                                <input type="text" id="note-${ord.id}" value="${ord.adminNote || ''}" placeholder="Ghi chú (giao hàng, bank...)" class="flex-1 text-[11px] px-2 py-1.5 rounded-lg border border-gray-200 outline-none focus:border-brand-rose">
+                                <button onclick="window.updateOrderNote('${ord.id}')" class="text-[10px] font-bold bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 rounded-lg transition">Lưu note</button>
                             </div>
                         </div>
                     </div>`);
