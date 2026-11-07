@@ -2,74 +2,86 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Admin - Tiệm giày Bé Xíu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    
-    <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .bulk-cb { width: 22px; height: 22px; cursor: pointer; accent-color: #ec4899; }
-    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 pb-20">
+<body class="bg-gray-100 text-gray-800">
 
     <!-- KHUNG ĐĂNG NHẬP -->
-    <div id="loginSection" class="min-h-screen flex items-center justify-center px-4 bg-gray-100">
+    <div id="loginSection" class="min-h-screen flex items-center justify-center px-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center">
-            <div class="w-20 h-20 bg-pink-50 rounded-full mx-auto flex items-center justify-center mb-4 border-4 border-pink-100">
-                <i class="fas fa-lock text-3xl text-pink-400"></i>
+            <div class="w-20 h-20 bg-gray-100 rounded-full mx-auto flex items-center justify-center mb-4 border-4 border-gray-200">
+                <i class="fas fa-lock text-3xl text-gray-400"></i>
             </div>
             <h2 class="text-2xl font-bold mb-6 text-gray-700">Quản Trị Viên</h2>
-            <input type="password" id="passCode" placeholder="Nhập mã pin..." class="w-full text-center p-3 border-2 border-gray-200 rounded-xl mb-4 text-xl tracking-widest focus:border-pink-500 focus:outline-none">
-            <button onclick="checkLogin()" class="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 rounded-xl transition shadow-md">Đăng Nhập</button>
+            <input type="password" id="passCode" placeholder="Nhập mã pin..." class="w-full text-center p-3 border-2 border-gray-200 rounded-xl mb-4 text-xl tracking-widest focus:border-blue-500 focus:outline-none">
+            <button onclick="checkLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition">Đăng Nhập</button>
         </div>
     </div>
 
     <!-- GIAO DIỆN ADMIN CHÍNH -->
-    <div id="adminPanel" class="hidden max-w-5xl mx-auto">
+    <div id="adminPanel" class="hidden max-w-5xl mx-auto pb-20">
         
         <!-- Header -->
-        <div class="bg-white shadow-sm p-4 sticky top-0 z-40 border-b flex justify-between items-center">
-            <div class="font-black text-lg text-pink-600"><i class="fas fa-shoe-prints mr-2"></i>Bé Xíu Admin</div>
-            <a href="index.html" class="text-xs bg-gray-100 font-bold px-3 py-2 rounded-lg hover:bg-gray-200"><i class="fas fa-external-link-alt"></i> Ra web xem</a>
+        <div class="bg-white shadow-sm p-4 sticky top-0 z-50 border-b flex justify-between items-center">
+            <div class="font-bold text-lg text-blue-800"><i class="fas fa-shoe-prints mr-2"></i> Admin Bé Xíu</div>
+            <a href="index.html" class="text-sm bg-gray-100 px-3 py-1.5 rounded-lg hover:bg-gray-200 font-bold"><i class="fas fa-external-link-alt"></i> Ra trang chủ</a>
         </div>
 
         <!-- Điều hướng Tabs -->
-        <div class="flex bg-white px-2 mt-2 gap-2 shadow-sm rounded-lg mx-2 p-1 sticky top-[60px] z-30 border">
-            <button onclick="switchTab('uploadTab')" id="btn-uploadTab" class="flex-1 py-2 text-sm font-bold bg-pink-50 text-pink-600 rounded-md transition"><i class="fas fa-plus-circle mr-1"></i> Đăng Giày</button>
-            <button onclick="switchTab('inventoryTab')" id="btn-inventoryTab" class="flex-1 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition"><i class="fas fa-box mr-1"></i> Kho Hàng</button>
-            <button onclick="switchTab('orderTab')" id="btn-orderTab" class="flex-1 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition"><i class="fas fa-list-alt mr-1"></i> Đơn Hàng</button>
+        <div class="flex bg-white px-2 mt-2 gap-2 shadow-sm rounded-lg mx-2 p-1 border">
+            <button onclick="switchTab('uploadTab')" id="btn-uploadTab" class="flex-1 py-2.5 text-sm font-bold bg-blue-50 text-blue-600 rounded-md transition border border-blue-200"><i class="fas fa-plus-circle mr-1"></i> Đăng Giày</button>
+            <button onclick="switchTab('inventoryTab')" id="btn-inventoryTab" class="flex-1 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition"><i class="fas fa-box mr-1"></i> Kho Hàng</button>
+            <button onclick="switchTab('orderTab')" id="btn-orderTab" class="flex-1 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition"><i class="fas fa-list-alt mr-1"></i> Đơn Hàng</button>
         </div>
 
         <!-- TAB 1: ĐĂNG GIÀY MỚI -->
-        <div id="uploadTab" class="p-3 tab-content block mt-2">
+        <div id="uploadTab" class="p-4 tab-content block">
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
+                <h3 class="font-bold text-lg mb-4 border-b pb-2"><i class="fas fa-upload text-blue-500"></i> Đăng Sản Phẩm Mới</h3>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Trái: Ảnh -->
                     <div>
-                        <label class="block text-sm font-semibold mb-2 text-gray-700">1. Chọn 1 Ảnh Vuông (Rõ nét):</label>
-                        <input type="file" id="imageInput" accept="image/*" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100" onchange="previewImage(this)">
-                        <div class="mt-3 aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden">
-                            <img id="imgPreview" src="" class="w-full h-full object-contain hidden p-2">
-                            <span id="imgPlaceholder" class="text-gray-400 text-sm flex flex-col items-center"><i class="fas fa-camera text-3xl mb-2"></i> Ảnh sản phẩm</span>
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">1. Ảnh sản phẩm:</label>
+                        <div class="relative border-2 border-dashed border-pink-300 bg-pink-50 rounded-2xl p-6 flex flex-col items-center justify-center hover:bg-pink-100 transition cursor-pointer min-h-[250px]" onclick="document.getElementById('imageInput').click()">
+                            <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="previewImage(this)">
+                            
+                            <div id="uploadPrompt" class="text-center">
+                                <i class="fas fa-cloud-upload-alt text-5xl text-pink-400 mb-3"></i>
+                                <p class="text-sm font-bold text-pink-600">Bấm để chọn ảnh</p>
+                                <p class="text-xs text-gray-500 mt-1">Ảnh sẽ tự động hiển thị vuông</p>
+                            </div>
+                            
+                            <div id="previewContainer" class="hidden w-full h-full relative">
+                                <img id="imgPreview" src="" class="w-full aspect-square object-contain bg-white rounded-xl border border-gray-200 shadow-sm p-1">
+                                <button onclick="event.stopPropagation(); clearImage()" class="absolute -top-3 -right-3 bg-white text-red-500 rounded-full w-8 h-8 flex items-center justify-center shadow-md border border-gray-100 hover:bg-red-50 transition" title="Đổi ảnh khác">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Phải: Thông tin -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold mb-2 text-gray-700">2. Nhập Mã giày:</label>
-                            <input type="text" id="shoeCode" placeholder="VD: M5, AB12..." class="w-full p-2.5 border border-gray-300 rounded-lg uppercase bg-gray-50 focus:bg-white font-bold">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">2. Mã giày (Tự động):</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="shoeCode" readonly class="w-full p-2.5 border border-gray-300 rounded-lg uppercase bg-gray-100 font-bold text-gray-600 cursor-not-allowed">
+                                <button onclick="document.getElementById('shoeCode').value = generateRandomCode()" class="bg-gray-200 hover:bg-gray-300 px-4 rounded-lg transition" title="Tạo mã ngẫu nhiên mới">
+                                    <i class="fas fa-sync-alt text-gray-600"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div>
                             <label class="block text-sm font-semibold mb-2 text-gray-700">3. Chọn Size:</label>
                             <div class="grid grid-cols-5 gap-1.5" id="sizeOptions">
-                                <!-- JS render -->
+                                <!-- JS sẽ render các nút chọn size vào đây -->
                             </div>
                         </div>
 
@@ -81,146 +93,127 @@
                         <div>
                             <label class="block text-sm font-semibold mb-2 text-gray-700">4. Giá tiền (Tự động):</label>
                             <div class="relative">
-                                <input type="number" id="shoePrice" class="w-full p-2.5 border border-gray-300 rounded-lg font-black text-brand-rose bg-gray-100 text-lg text-pink-600" readonly>
+                                <input type="number" id="shoePrice" class="w-full p-2.5 border border-gray-300 rounded-lg font-black text-pink-600 bg-gray-100 text-lg" readonly>
                                 <span class="absolute right-4 top-2.5 font-bold text-gray-400">VNĐ</span>
                             </div>
-                            <p class="text-[11px] text-gray-500 mt-1.5 font-semibold">Tự động: ≤35.5 (180k) | 36-36.5 (230k) | ≥37 (260k)</p>
+                            <p class="text-[11px] text-gray-500 mt-1.5 font-semibold">Tự động: ≤35.5 (180k) | 36 - 36.5 (230k) | ≥37 (260k)</p>
                         </div>
 
-                        <button id="btnUpload" onclick="uploadProduct()" class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition mt-4 flex items-center justify-center gap-2">
-                            <i class="fas fa-cloud-upload-alt"></i> Tự Động Nén & Đăng
+                        <button id="btnUpload" onclick="uploadProduct()" class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition mt-4">
+                            <i class="fas fa-cloud-upload-alt mr-2"></i> Đăng Lên Web
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 2: QUẢN LÝ KHO HÀNG -->
-        <div id="inventoryTab" class="p-3 tab-content hidden mt-2">
-            
-            <!-- TOOLBAR LỌC & TẢI HÀNG LOẠT -->
-            <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 mb-4 flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
-                
-                <div class="flex items-center gap-2 w-full md:w-auto">
-                    <span class="font-bold text-sm text-gray-700 shrink-0">Lọc Size:</span>
-                    <select id="filterInventorySize" class="border border-gray-300 rounded-lg p-1.5 text-sm font-bold bg-gray-50 w-full md:w-auto" onchange="loadInventory()">
-                        <option value="ALL">Tất cả</option>
-                        <option value="Kid">Size Kid</option>
-                        <!-- Các option khác sẽ được render bằng JS -->
-                    </select>
+        <!-- TAB 2: QUẢN LÝ KHO -->
+        <div id="inventoryTab" class="p-4 tab-content hidden">
+            <!-- THANH CÔNG CỤ: Lọc Size & Đồng bộ Giá -->
+            <div class="flex flex-col md:flex-row justify-between md:items-center bg-white p-3 rounded-xl shadow-sm border border-gray-200 mb-4 gap-3">
+                <div class="flex items-center gap-2 font-bold text-gray-700">
+                    <i class="fas fa-boxes text-blue-500"></i> Tổng kho: <span id="countAvailable" class="text-red-500">0</span> đôi
                 </div>
-
-                <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-                    <button onclick="selectAllBulk()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold py-2 px-3 rounded-lg transition">
-                        Chọn tất cả
-                    </button>
-                    <button id="btn-download-bulk" onclick="downloadSelectedBulk()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1">
-                        <i class="fas fa-download"></i> Tải <span id="selectedCount" class="mx-0.5">0</span> ảnh
-                    </button>
-                    <button onclick="executeBatchPriceUpdate()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1">
-                        <i class="fas fa-sync-alt"></i> Đồng bộ Giá
+                <div class="flex gap-2 w-full md:w-auto">
+                    <!-- Dropdown lọc Size -->
+                    <select id="filterInventorySize" onchange="loadInventory()" class="p-2 border border-gray-300 rounded-lg text-sm bg-gray-50 flex-1 md:w-auto font-semibold focus:outline-none focus:border-blue-500">
+                        <option value="ALL">Lọc theo Size (Tất cả)</option>
+                        <!-- Options sẽ được gen bằng JS -->
+                    </select>
+                    <!-- Nút Đồng bộ giá hàng loạt -->
+                    <button onclick="syncAllPrices()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition whitespace-nowrap">
+                        <i class="fas fa-sync-alt mr-1"></i> Đồng bộ giá
                     </button>
                 </div>
             </div>
 
-            <h3 class="font-bold mb-3 text-gray-700 text-sm">Kho Hàng (<span id="countAvailable">0</span> đôi)</h3>
-            <div id="adminProductList" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-3">
+            <div id="adminProductList" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 <!-- Data load ở đây -->
             </div>
         </div>
 
-        <!-- TAB 3: ĐƠN HÀNG -->
-        <div id="orderTab" class="p-3 tab-content hidden mt-2">
-            <button onclick="testTelegramBot()" class="w-full bg-blue-50 text-blue-700 py-3 rounded-xl font-bold mb-4 border border-blue-200 active:bg-blue-100 transition shadow-sm text-sm">
-                <i class="fab fa-telegram-plane mr-1 text-lg"></i> Test tin nhắn Bot Telegram
+        <!-- TAB 3: QUẢN LÝ ĐƠN HÀNG -->
+        <div id="orderTab" class="p-4 tab-content hidden">
+            <button onclick="testTelegramBot()" class="w-full bg-blue-100 text-blue-700 py-3 rounded-lg font-bold mb-4 border border-blue-200 active:bg-blue-200">
+                <i class="fab fa-telegram-plane mr-1"></i> Test thử Bot Telegram
             </button>
-            <h3 class="font-bold mb-3 text-gray-700 text-sm">Lịch sử Yêu cầu tư vấn & Chốt đơn</h3>
+            <h3 class="font-bold mb-3 text-gray-700">Lịch sử Chốt Đơn</h3>
             <div id="adminOrderList" class="space-y-3">
                 <!-- Data load ở đây -->
             </div>
         </div>
-    </div>
 
-    <!-- MODAL CHỈNH SỬA SẢN PHẨM -->
-    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl relative">
-            <button onclick="closeEditModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-800">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <h3 class="font-bold text-lg mb-4 text-gray-800 border-b pb-2"><i class="fas fa-edit text-orange-500"></i> Sửa thông tin giày</h3>
-            
-            <input type="hidden" id="edit-id">
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Mã giày</label>
-                    <input type="text" id="edit-code" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-bold uppercase focus:border-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Size</label>
-                    <input type="text" id="edit-size" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-bold focus:border-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Giá bán (VNĐ)</label>
-                    <input type="number" id="edit-price" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-black text-pink-600 focus:border-blue-500 outline-none text-lg">
-                </div>
-            </div>
-            
-            <div class="flex gap-2 mt-6">
-                <button onclick="closeEditModal()" class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200">Hủy bỏ</button>
-                <button onclick="saveEdit()" class="flex-1 bg-black text-white font-bold py-3 rounded-xl shadow-lg hover:bg-gray-800 flex items-center justify-center gap-2">
-                    <i class="fas fa-save"></i> Lưu lại
-                </button>
-            </div>
-        </div>
     </div>
-
-    <!-- CANVAS DÙNG ĐỂ RENDER ẢNH WATERMARK VÀ NÉN ẢNH (ẨN) -->
-    <canvas id="watermarkCanvas" class="hidden"></canvas>
 
     <script>
-        // ==========================================
-        // DÁN CONFIG FIREBASE CỦA BẠN VÀO ĐÂY
+        // FIREBASE CONFIG CŨ CỦA BẠN
+        const fbP1 = "AIzaSyCVAm"; const fbP2 = "JO1KViXVg3"; const fbP3 = "kizelTp6CZ"; const fbP4 = "AFmJLkKiM";
         const firebaseConfig = {
-            apiKey: "AIzaSyCVAm" + "JO1KViXVg3" + "kizelTp6CZ" + "AFmJLkKiM",
-            authDomain: "donggia-8ef8e.firebaseapp.com",
+            apiKey: fbP1 + fbP2 + fbP3 + fbP4,
+            authDomain: "donggia-8ef8e.firebaseapp.com", 
             projectId: "donggia-8ef8e",
-            storageBucket: "donggia-8ef8e.firebasestorage.app"
+            storageBucket: "donggia-8ef8e.firebasestorage.app", 
+            messagingSenderId: "186638607487",
+            appId: "1:186638607487:web:9fe74d79311b0f43d70b4a"
         };
-        // ==========================================
         
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        let allProductsRaw = [];
 
-        // 1. ĐĂNG NHẬP
+        // 1. CHỨC NĂNG ĐĂNG NHẬP
         function checkLogin() {
             if(document.getElementById('passCode').value === '3119') {
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('adminPanel').classList.remove('hidden');
                 initAdmin();
-            } else { alert('Sai mật khẩu!'); }
+            } else {
+                alert('Sai mật khẩu!');
+            }
         }
 
+        // Cấu hình Size
         const sizes = ['Kid','33','33.5','34','34.5','35','35.5','36','36.5','37','37.5','38','38.5','39','39.5','40+'];
 
         function initAdmin() {
+            // Khởi tạo nút size đăng giày
             const sizeContainer = document.getElementById('sizeOptions');
-            const filterSizeSelect = document.getElementById('filterInventorySize');
-            
+            const filterSelect = document.getElementById('filterInventorySize');
+
             sizes.forEach(s => {
-                sizeContainer.innerHTML += `
-                    <div class="text-center">
-                        <input type="radio" name="size" id="size_${s}" value="${s}" class="peer hidden" onchange="autoCalcPrice()">
-                        <label for="size_${s}" class="block py-1.5 border border-gray-300 rounded-lg cursor-pointer peer-checked:bg-pink-500 peer-checked:text-white peer-checked:border-pink-500 text-[11px] font-bold transition hover:bg-gray-100">${s}</label>
-                    </div>
+                // Gen nút radio
+                let div = document.createElement('div');
+                div.className = "text-center";
+                div.innerHTML = `
+                    <input type="radio" name="size" id="size_${s}" value="${s}" class="peer hidden" onchange="autoCalcPrice()">
+                    <label for="size_${s}" class="block py-1.5 border border-gray-300 rounded cursor-pointer peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500 text-sm font-medium transition hover:bg-gray-50">${s}</label>
                 `;
-                if(s !== 'Kid') filterSizeSelect.innerHTML += `<option value="${s}">Size ${s}</option>`;
+                sizeContainer.appendChild(div);
+
+                // Gen lựa chọn lọc Size
+                if(filterSelect.options.length <= 16) { 
+                    let opt = document.createElement('option');
+                    opt.value = s;
+                    opt.textContent = "Chỉ lọc Size " + s;
+                    filterSelect.appendChild(opt);
+                }
             });
             
-            fetchInventoryData();
+            // Generate mã ngẫu nhiên lần đầu
+            document.getElementById('shoeCode').value = generateRandomCode();
+            
+            loadInventory();
             loadOrders();
         }
+        
+        function generateRandomCode() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            const c1 = chars[Math.floor(Math.random() * chars.length)];
+            const c2 = chars[Math.floor(Math.random() * chars.length)];
+            const digits = String(Math.floor(100 + Math.random() * 900));
+            return `${c1}${c2}${digits}`;
+        }
 
+        // 2. LOGIC TÍNH GIÁ
         function toggleSpecialBrand() {
             const cb = document.getElementById('isSpecialBrand');
             cb.checked = !cb.checked;
@@ -232,10 +225,15 @@
             const sizeInput = document.querySelector('input[name="size"]:checked');
             const priceInput = document.getElementById('shoePrice');
             
-            if (isSpecial) { priceInput.value = 350000; return; }
+            if (isSpecial) {
+                priceInput.value = 350000;
+                return;
+            }
+            
             if (sizeInput) {
                 let sVal = sizeInput.value;
                 let sNum = parseFloat(sVal);
+                
                 if (sVal === 'Kid' || sNum <= 35.5) priceInput.value = 180000;
                 else if (sNum === 36 || sNum === 36.5) priceInput.value = 230000;
                 else if (sNum >= 37) priceInput.value = 260000;
@@ -243,52 +241,24 @@
             }
         }
 
+        // 3. UPLOAD ẢNH & DATA (Tích hợp lại ImageKit của bạn)
         function previewImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('imgPreview').src = e.target.result;
-                    document.getElementById('imgPreview').classList.remove('hidden');
-                    document.getElementById('imgPlaceholder').classList.add('hidden');
+                    document.getElementById('previewContainer').classList.remove('hidden');
+                    document.getElementById('uploadPrompt').classList.add('hidden');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // --- BỘ NÉN ẢNH TỰ ĐỘNG ---
-        function compressImage(file, maxDimension, quality) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        let width = img.width;
-                        let height = img.height;
-                        
-                        // Tính toán kích thước nén
-                        if (width > height && width > maxDimension) {
-                            height = Math.round((height * maxDimension) / width);
-                            width = maxDimension;
-                        } else if (height >= width && height > maxDimension) {
-                            width = Math.round((width * maxDimension) / height);
-                            height = maxDimension;
-                        }
-
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // Trả về Base64 đã được nén siêu nhẹ
-                        resolve(canvas.toDataURL('image/jpeg', quality));
-                    };
-                    img.onerror = (e) => reject(e);
-                };
-                reader.onerror = (e) => reject(e);
-            });
+        function clearImage() {
+            document.getElementById('imageInput').value = '';
+            document.getElementById('imgPreview').src = '';
+            document.getElementById('uploadPrompt').classList.remove('hidden');
+            document.getElementById('previewContainer').classList.add('hidden');
         }
 
         async function uploadProduct() {
@@ -298,317 +268,192 @@
             const imgFile = document.getElementById('imageInput').files[0];
             const btn = document.getElementById('btnUpload');
 
-            if(!code || !sizeInput || !price || !imgFile) { alert('Điền đủ Mã, Size, Giá và Ảnh nhé!'); return; }
+            if(!code || !sizeInput || !price || !imgFile) {
+                alert('Vui lòng điền đủ Mã, Size, Giá và chọn Ảnh!');
+                return;
+            }
 
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang nén ảnh & tải lên...';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên...';
 
             try {
-                // TỰ ĐỘNG NÉN ẢNH TRƯỚC KHI TẢI LÊN
-                // Giảm ảnh từ 2.8MB xuống giới hạn 1000px, chất lượng 80% (Ra file khoảng 100-150KB)
-                const compressedBase64 = await compressImage(imgFile, 1000, 0.8);
-
+                // TÍCH HỢP LẠI IMAGEKIT CỦA BẠN
+                const ikPriv1 = "ayTs6CE91Z"; const ikPriv2 = "pBtxpipgz2"; const ikPriv3 = "GmpKdjU=";
+                const IK_PRIVATE_KEY = "private_" + ikPriv1 + ikPriv2 + ikPriv3;
+                const IK_UPLOAD_ENDPOINT = "https://upload.imagekit.io/api/v1/files/upload";
+                const IK_AUTH = "Basic " + btoa(IK_PRIVATE_KEY + ":");
+                
+                const formData = new FormData();
+                formData.append("file", imgFile, `giay-${code}.jpg`); 
+                formData.append("fileName", `giay-${code}.jpg`); 
+                formData.append("folder", "/giay2hand");
+                
+                const res = await fetch(IK_UPLOAD_ENDPOINT, { 
+                    method: "POST", 
+                    headers: { "Authorization": IK_AUTH }, 
+                    body: formData 
+                });
+                const ikData = await res.json();
+                
+                if (!ikData.url) throw new Error("Lỗi tải ảnh lên ImageKit");
+                
+                // LƯU LÊN FIREBASE
                 await db.collection("products").add({
-                    code: code, size: sizeInput.value, price: price,
-                    imageUrl: compressedBase64, images: [compressedBase64], status: 'available',
+                    code: code,
+                    size: sizeInput.value,
+                    price: price,
+                    imageUrl: ikData.url,
+                    images: [ikData.url], // Ghi đúp cho tương thích cũ
+                    status: 'available',
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
+
+                alert('✅ Đã đăng thành công!');
                 
-                alert('✅ Đăng thành công! Ảnh đã được nén tối ưu để tiết kiệm dung lượng.');
-                
-                document.getElementById('shoeCode').value = '';
-                document.getElementById('imageInput').value = '';
-                document.getElementById('imgPreview').classList.add('hidden');
-                document.getElementById('imgPlaceholder').classList.remove('hidden');
+                // Reset Form
+                document.getElementById('shoeCode').value = generateRandomCode();
+                clearImage();
                 if(sizeInput) sizeInput.checked = false;
                 document.getElementById('shoePrice').value = '';
                 document.getElementById('isSpecialBrand').checked = false;
                 
-                btn.disabled = false; btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Tự Động Nén & Đăng';
             } catch (err) {
+                console.error(err);
                 alert('Lỗi: ' + err.message);
-                btn.disabled = false; btn.innerHTML = 'Đăng Lỗi - Thử Lại';
             }
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-cloud-upload-alt mr-2"></i> Đăng Lên Web';
         }
 
+        // 4. QUẢN LÝ TABS
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('[id^="btn-"]').forEach(btn => btn.className = "flex-1 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition");
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                btn.className = "flex-1 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition";
+            });
+            
             document.getElementById(tabId).classList.remove('hidden');
-            document.getElementById('btn-' + tabId).className = "flex-1 py-2 text-sm font-bold bg-pink-50 text-pink-600 rounded-md transition";
+            document.getElementById('btn-' + tabId).className = "flex-1 py-2.5 text-sm font-bold bg-blue-50 text-blue-600 rounded-md transition border border-blue-200";
         }
 
-        // KHO HÀNG & LỌC
-        function fetchInventoryData() {
-            db.collection("products").onSnapshot((snapshot) => {
-                allProductsRaw = [];
+        // Tối ưu ảnh hiển thị
+        function getOptimizedImageUrl(url, width = 400) {
+            if (!url) return '';
+            if (url.includes('ik.imagekit.io') && !url.includes('tr=')) return `${url}?tr=w-${width},f-webp,q-85`;
+            return url;
+        }
+
+        // 5. LOAD KHO HÀNG (CÓ TÍCH HỢP BỘ LỌC SIZE)
+        function loadInventory() {
+            const filterValue = document.getElementById('filterInventorySize') ? document.getElementById('filterInventorySize').value : 'ALL';
+
+            db.collection("products").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+                const container = document.getElementById('adminProductList');
+                container.innerHTML = '';
+                let availableCount = 0;
+
                 snapshot.forEach((doc) => {
                     const data = doc.data();
-                    if(data.status === 'available' || !data.isSold) {
-                        const img = (data.images && data.images.length > 0) ? data.images[0] : data.imageUrl;
-                        allProductsRaw.push({ id: doc.id, ...data, img: img });
+                    if (data.status === 'available' || !data.status || !data.isSold) {
+                        
+                        // Nếu đang dùng lọc Size thì kiểm tra
+                        if (filterValue !== 'ALL' && String(data.size) !== filterValue) {
+                            return; // Bỏ qua đôi này vì không đúng Size cần lọc
+                        }
+
+                        availableCount++;
+                        // Hỗ trợ cả 2 định dạng lưu ảnh (mới và cũ)
+                        const imgUrl = data.imageUrl || (data.images && data.images[0]) || '';
+                        
+                        container.innerHTML += `
+                            <div class="bg-white border border-gray-200 rounded-lg p-2 text-center shadow-sm relative group">
+                                <img src="${getOptimizedImageUrl(imgUrl, 200)}" class="w-full aspect-square object-contain bg-gray-50 rounded mb-2 border border-gray-100">
+                                <div class="font-bold text-sm text-red-600">#${data.code} <span class="text-xs text-gray-500 font-semibold ml-1">Sz ${data.size}</span></div>
+                                <div class="font-bold text-xs text-gray-800">${(data.price || 0).toLocaleString('vi-VN')}đ</div>
+                                <button onclick="deleteProduct('${doc.id}')" class="mt-2 text-xs w-full bg-red-50 text-red-500 hover:bg-red-500 hover:text-white py-1.5 rounded font-bold transition"><i class="fas fa-trash"></i> Xóa</button>
+                            </div>
+                        `;
                     }
                 });
-                
-                allProductsRaw.sort((a, b) => {
-                    const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
-                    const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
-                    return timeB - timeA;
-                });
-                
-                loadInventory();
+                document.getElementById('countAvailable').innerText = availableCount;
             });
         }
 
-        function loadInventory() {
-            const container = document.getElementById('adminProductList');
-            const filterSize = document.getElementById('filterInventorySize').value;
-            container.innerHTML = '';
-            
-            let displayProducts = allProductsRaw;
-            if(filterSize !== 'ALL') {
-                displayProducts = allProductsRaw.filter(p => String(p.size).trim() === filterSize);
-            }
-            
-            document.getElementById('countAvailable').innerText = displayProducts.length;
-
-            displayProducts.forEach((p) => {
-                container.innerHTML += `
-                    <div class="bg-white border border-gray-200 rounded-xl p-2 text-center shadow-sm flex flex-col justify-between relative group">
-                        
-                        <div class="absolute top-3 left-3 z-10">
-                            <input type="checkbox" class="bulk-cb bg-white border-2 shadow" 
-                                value="${p.id}" data-img="${p.img}" data-code="${p.code}" 
-                                data-size="${p.size}" data-price="${p.price}" onchange="updateSelectedCount()">
-                        </div>
-
-                        <div>
-                            <div class="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-2 relative cursor-pointer" onclick="openZoom('${p.img}')">
-                                <img src="${p.img}" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fas fa-search text-white text-xl"></i></div>
-                            </div>
-                            <div class="font-black text-sm text-gray-800">#${p.code}</div>
-                            <div class="text-[11px] font-bold text-pink-600 bg-pink-50 py-0.5 rounded mt-1">Size ${p.size} • ${Number(p.price).toLocaleString('vi-VN')}đ</div>
-                        </div>
-                        
-                        <div class="flex items-center gap-1 mt-3">
-                            <button onclick="downloadImageWithText('${p.img}', '${p.code}', '${p.size}', ${p.price})" class="flex-1 text-[10px] sm:text-xs bg-green-50 text-green-600 hover:bg-green-100 py-1.5 rounded font-bold shadow-sm" title="Tải ảnh lẻ"><i class="fas fa-download"></i></button>
-                            <button onclick="openEditModal('${p.id}', '${p.code}', '${p.size}', ${p.price})" class="flex-1 text-[10px] sm:text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 py-1.5 rounded font-bold shadow-sm"><i class="fas fa-pen"></i></button>
-                            <button onclick="deleteProduct('${p.id}')" class="flex-1 text-[10px] sm:text-xs bg-red-50 text-red-500 hover:bg-red-100 py-1.5 rounded font-bold shadow-sm"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-            updateSelectedCount(); 
-        }
-
-        // CHỌN VÀ TẢI HÀNG LOẠT
-        function updateSelectedCount() {
-            const count = document.querySelectorAll('.bulk-cb:checked').length;
-            document.getElementById('selectedCount').innerText = count;
-        }
-
-        function selectAllBulk() {
-            const checkboxes = document.querySelectorAll('.bulk-cb');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            checkboxes.forEach(cb => cb.checked = !allChecked);
-            updateSelectedCount();
-        }
-
-        async function downloadSelectedBulk() {
-            const checkedBoxes = document.querySelectorAll('.bulk-cb:checked');
-            if (checkedBoxes.length === 0) {
-                alert('Vui lòng tick chọn ít nhất 1 ảnh để tải!');
-                return;
-            }
-
-            const btn = document.getElementById('btn-download-bulk');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-            btn.disabled = true;
-
-            for (let i = 0; i < checkedBoxes.length; i++) {
-                const cb = checkedBoxes[i];
-                await downloadImageWithText(
-                    cb.getAttribute('data-img'), 
-                    cb.getAttribute('data-code'), 
-                    cb.getAttribute('data-size'), 
-                    cb.getAttribute('data-price'),
-                    true
-                );
-                await new Promise(resolve => setTimeout(resolve, 400));
-            }
-
-            btn.innerHTML = `<i class="fas fa-download"></i> Tải <span id="selectedCount" class="mx-0.5">${checkedBoxes.length}</span> ảnh`;
-            btn.disabled = false;
-            
-            document.querySelectorAll('.bulk-cb:checked').forEach(cb => cb.checked = false);
-            updateSelectedCount();
-            
-            alert(`✅ Đã gửi lệnh tải ${checkedBoxes.length} ảnh!`);
-        }
-
-
-        // XÓA VÀ SỬA
         function deleteProduct(id) {
-            if(confirm('Chắc chắn xóa đôi này khỏi kho?')) db.collection("products").doc(id).delete();
+            if(confirm('Chắc chắn xóa đôi này khỏi kho?')) {
+                db.collection("products").doc(id).delete();
+            }
         }
 
-        function openEditModal(id, code, size, price) {
-            document.getElementById('edit-id').value = id;
-            document.getElementById('edit-code').value = code;
-            document.getElementById('edit-size').value = size;
-            document.getElementById('edit-price').value = price;
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-
-        function closeEditModal() { document.getElementById('editModal').classList.add('hidden'); }
-
-        async function saveEdit() {
-            const id = document.getElementById('edit-id').value;
-            const code = document.getElementById('edit-code').value.toUpperCase().trim();
-            const size = document.getElementById('edit-size').value.trim();
-            const price = Number(document.getElementById('edit-price').value);
-
-            if(!code || !size || !price) { alert('Vui lòng nhập đủ thông tin!'); return; }
-
-            try {
-                await db.collection("products").doc(id).update({ code: code, size: size, price: price });
-                closeEditModal();
-                alert('✅ Lưu thông tin thành công!');
-            } catch (error) { alert('Lỗi cập nhật: ' + error.message); }
-        }
-
-        // TẢI ẢNH ĐÓNG DẤU
-        function drawRoundedRect(ctx, x, y, width, height, radius) {
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        function downloadImageWithText(imgUrl, code, size, price, isBulk = false) {
-            return new Promise((resolve) => {
-                const canvas = document.getElementById('watermarkCanvas');
-                const ctx = canvas.getContext('2d');
-                const img = new Image();
-                
-                img.crossOrigin = 'anonymous'; 
-                const isBase64 = imgUrl.startsWith('data:image');
-                img.src = isBase64 ? imgUrl : imgUrl + (imgUrl.includes('?') ? '&' : '?') + 'not-from-cache';
-
-                img.onload = () => {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-
-                    ctx.drawImage(img, 0, 0);
-
-                    const text = `Mã: ${code} - Size: ${size} - Giá: ${Number(price).toLocaleString('vi-VN')}đ`;
-                    const fontSize = Math.max(20, Math.floor(canvas.width / 28)); 
-                    ctx.font = `bold ${fontSize}px sans-serif`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-
-                    const textWidth = ctx.measureText(text).width;
-                    const paddingX = fontSize * 1.5;
-                    const paddingY = fontSize * 0.8;
-                    
-                    const boxWidth = textWidth + paddingX;
-                    const boxHeight = fontSize + paddingY;
-                    const x = canvas.width / 2;
-                    
-                    // ÉP SÁT ĐÁY ĐỂ KHÔNG PHẠM VÀO GIÀY
-                    const y = canvas.height - (boxHeight / 2) - 15; 
-                    
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                    drawRoundedRect(ctx, x - (boxWidth / 2), y - (boxHeight / 2), boxWidth, boxHeight, boxHeight / 2.5);
-
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillText(text, x, y + (fontSize * 0.05));
-
-                    const link = document.createElement('a');
-                    link.download = `BeXiu_${code}_Size${size}.jpg`;
-                    link.href = canvas.toDataURL('image/jpeg', 0.95);
-                    link.click();
-                    resolve(true);
-                };
-
-                img.onerror = () => {
-                    if(!isBulk) alert('Trình duyệt chặn ghép chữ do lỗi bảo mật CORS. Hệ thống sẽ tải ảnh gốc!');
-                    const link = document.createElement('a');
-                    link.download = `BeXiu_${code}.jpg`;
-                    link.href = imgUrl;
-                    link.target = '_blank';
-                    link.click();
-                    resolve(false);
-                };
-            });
-        }
-
-        // ĐỒNG BỘ GIÁ HÀNG LOẠT
-        async function executeBatchPriceUpdate() {
-            if(!confirm("Đồng bộ giá tự động: ≤35.5 (180k) | 36-36.5 (230k) | ≥37 (260k)? Các đôi 350k sẽ bị cập nhật lại trừ khi bạn sửa tay.")) return;
+        // TÍNH NĂNG MỚI: ĐỒNG BỘ GIÁ HÀNG LOẠT
+        async function syncAllPrices() {
+            if(!confirm('Tính năng này sẽ tự động chạy qua toàn bộ Kho Hàng (chưa bán) và thiết lập lại giá chuẩn mới nhất:\n• Size <= 35.5: 180k\n• Size 36 và 36.5: 230k\n• Size >= 37: 260k\n\n(Lưu ý: Hàng Vans/Converse giá 350k sẽ được GIỮ NGUYÊN).\n\nBẠN CÓ CHẮC CHẮN MUỐN ĐỒNG BỘ KHÔNG?')) return;
             
             try {
-                const snapshot = await db.collection("products").where("status", "==", "available").get();
-                let batch = db.batch();
-                let count = 0;
-                let updated = 0;
+                // Firebase cho phép tối đa 500 thao tác trong 1 batch
+                const batch = db.batch(); 
+                const snapshot = await db.collection("products").get();
+                let updatedCount = 0;
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    const sNum = parseFloat(data.size);
-                    let newPrice = 0;
-
-                    if(String(data.size).toLowerCase() === 'kid' || sNum <= 35.5) newPrice = 180000;
-                    else if (sNum === 36 || sNum === 36.5) newPrice = 230000;
-                    else if (sNum >= 37) newPrice = 260000;
-
-                    if(newPrice !== 0 && data.price !== newPrice && data.price !== 350000) {
-                        batch.update(doc.ref, { price: newPrice });
-                        updated++;
-                        count++;
+                    
+                    // Chỉ quét các đôi còn hàng
+                    if(data.status === 'available' || !data.status || !data.isSold) {
+                        let isSpecial = (data.price === 350000); // Tạm coi giá 350k là loại đặc biệt không đổi
+                        
+                        if(!isSpecial) {
+                            let newPrice = 0;
+                            let sVal = data.size;
+                            let sNum = parseFloat(sVal);
+                            
+                            if (sVal === 'Kid' || sNum <= 35.5) newPrice = 180000;
+                            else if (sNum === 36 || sNum === 36.5) newPrice = 230000;
+                            else if (sNum >= 37) newPrice = 260000;
+                            
+                            // Nếu giá hiện tại bị sai so với chuẩn, thì cập nhật
+                            if(newPrice > 0 && data.price !== newPrice) {
+                                batch.update(doc.ref, { price: newPrice });
+                                updatedCount++;
+                            }
+                        }
                     }
-
-                    if (count === 400) { batch.commit(); batch = db.batch(); count = 0; }
                 });
 
-                if(count > 0) await batch.commit();
-                alert(`✅ Xong! Đã quét và cập nhật lại giá chuẩn cho ${updated} đôi giày.`);
-            } catch (error) { alert("Lỗi đồng bộ: " + error.message); }
+                if(updatedCount > 0) {
+                    await batch.commit();
+                    alert(`✅ HOÀN TẤT!\nĐã tự động sửa lại giá cho ${updatedCount} đôi giày.`);
+                    loadInventory(); // Tải lại giao diện
+                } else {
+                    alert('tuyệt vời! Toàn bộ tủ giày của bạn đều đang ở mức giá chuẩn, không cần đồng bộ thêm.');
+                }
+
+            } catch(error) {
+                console.error("Lỗi đồng bộ giá:", error);
+                alert("Lỗi khi đồng bộ giá: " + error.message);
+            }
         }
 
-        // ĐƠN HÀNG VÀ TELEGRAM
+
+        // 6. LOAD ĐƠN HÀNG 
         function loadOrders() {
-            db.collection("orders").orderBy("createdAt", "desc").limit(20).onSnapshot(snapshot => {
+            db.collection("orders").orderBy("timestamp", "desc").limit(30).onSnapshot(snapshot => {
                 const container = document.getElementById('adminOrderList');
                 container.innerHTML = '';
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    const date = data.createdAt ? data.createdAt.toDate().toLocaleString('vi-VN') : 'Mới';
-                    const isZalo = data.type === 'ZALO_CONSULT';
+                    const date = data.timestamp ? data.timestamp.toDate().toLocaleString('vi-VN') : 'Mới';
                     container.innerHTML += `
-                        <div class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between gap-3">
-                            <div class="flex gap-3">
-                                <img src="${data.productImage}" class="w-16 h-16 rounded-lg object-cover border">
-                                <div>
-                                    <div class="flex items-center gap-2">
-                                        <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold">${date}</span>
-                                        ${isZalo ? '<span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold">Zalo</span>' : '<span class="bg-pink-100 text-pink-700 text-[10px] px-2 py-0.5 rounded font-bold">Chốt Nhanh</span>'}
-                                    </div>
-                                    <div class="font-bold text-gray-800 mt-1">${data.customerName} - <a href="https://zalo.me/${data.customerPhone}" target="_blank" class="text-blue-600 underline">${data.customerPhone}</a></div>
-                                    <div class="text-[11px] text-gray-500">${data.customerAddress}</div>
-                                    <div class="text-xs font-black text-pink-600 mt-1">${data.productName} - ${Number(data.totalPrice).toLocaleString('vi-VN')}đ</div>
-                                </div>
+                        <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between gap-2">
+                            <div>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded font-bold mb-1 inline-block">${date}</span>
+                                <div class="font-bold text-gray-800 text-sm">👤 ${data.customerName} - 📞 ${data.customerPhone}</div>
+                                <div class="text-sm text-gray-600 mt-0.5">📍 ${data.address}</div>
+                                <div class="text-sm font-semibold text-red-600 mt-1">👟 ${data.productCode} (Size ${data.size}) - ${(data.price || 0).toLocaleString('vi-VN')}đ</div>
                             </div>
                             <div class="flex items-center">
-                                <button onclick="deleteOrder('${doc.id}')" class="bg-red-50 text-red-500 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-100 w-full md:w-auto transition"><i class="fas fa-trash"></i> Xóa đơn</button>
+                                <button onclick="deleteOrder('${doc.id}')" class="bg-red-50 text-red-500 px-3 py-1.5 rounded text-sm hover:bg-red-100 w-full md:w-auto font-bold"><i class="fas fa-trash"></i> Xóa</button>
                             </div>
                         </div>
                     `;
@@ -616,22 +461,24 @@
             });
         }
 
-        function deleteOrder(id) { if(confirm('Xóa bản ghi đơn hàng này?')) db.collection("orders").doc(id).delete(); }
+        function deleteOrder(id) {
+            if(confirm('Xóa thông tin đơn hàng này?')) {
+                db.collection("orders").doc(id).delete();
+            }
+        }
 
+        // Hàm Test Telegram
         function testTelegramBot() {
             const token = "8968912621:AAFKK2PQuPNqWLLer4_wkZf6PtY1ZzHV9RI";
             const id = "8511070091";
             fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: id, text: "✅ Test thành công! Bot đã kết nối hoàn hảo với trang Admin Bé Xíu." })
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: id, text: "✅ Test thành công! Bot đã kết nối với Web Bé Xíu." })
             }).then(res => {
-                if(res.ok) alert('✅ Đã gửi tin nhắn test! Bạn mở Telegram xem có nhận được chưa.');
-                else alert('❌ Gửi lỗi! Đảm bảo bạn đã mở Telegram, tìm bot và bấm START.');
+                if(res.ok) alert('✅ Đã gửi tin nhắn test! Bạn mở ứng dụng Telegram xem có nhận được chưa.');
+                else alert('❌ Gửi lỗi! Bạn nhớ mở ứng dụng Telegram và bấm /start với con Bot của bạn chưa?');
             });
-        }
-        
-        function openZoom(url) {
-            window.open(url, '_blank');
         }
     </script>
 </body>
