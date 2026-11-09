@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin - Tiệm giày Bé Xíu</title>
-    <!-- Font chữ Inter thống nhất -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -16,7 +15,6 @@
             }
         }
     </script>
-
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -29,9 +27,7 @@
     <div id="customDialog" class="fixed inset-0 bg-black/60 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl text-center">
             <h3 id="dialogMessage" class="text-gray-800 font-bold text-sm mb-6">Message</h3>
-            <div id="dialogButtons" class="flex gap-3 justify-center">
-                <!-- Buttons injected by JS -->
-            </div>
+            <div id="dialogButtons" class="flex gap-3 justify-center"></div>
         </div>
     </div>
 
@@ -53,12 +49,12 @@
         <!-- Header -->
         <div class="bg-white shadow-sm p-4 sticky top-0 z-40 border-b flex justify-between items-center">
             <div class="font-black text-lg text-pink-600"><i class="fas fa-shoe-prints mr-2"></i>Bé Xíu Admin</div>
-            <a href="index (2).html" target="_blank" class="text-xs bg-gray-100 font-bold px-3 py-2 rounded-lg hover:bg-gray-200"><i class="fas fa-external-link-alt"></i> Xem Trang Chủ</a>
+            <a href="index.html" target="_blank" class="text-xs bg-gray-100 font-bold px-3 py-2 rounded-lg hover:bg-gray-200"><i class="fas fa-external-link-alt"></i> Trang Chủ</a>
         </div>
 
         <!-- Điều hướng Tabs -->
         <div class="flex bg-white px-2 mt-2 gap-2 shadow-sm rounded-lg mx-2 p-1 sticky top-[60px] z-30 border border-gray-200">
-            <button onclick="switchTab('uploadTab')" id="btn-uploadTab" class="flex-1 py-2 text-sm font-bold bg-pink-50 text-pink-600 rounded-md transition"><i class="fas fa-plus-circle mr-1"></i> Đăng Giày</button>
+            <button onclick="switchTab('uploadTab')" id="btn-uploadTab" class="flex-1 py-2 text-sm font-bold bg-pink-50 text-pink-600 rounded-md transition border border-pink-100"><i class="fas fa-plus-circle mr-1"></i> Đăng Giày</button>
             <button onclick="switchTab('inventoryTab')" id="btn-inventoryTab" class="flex-1 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition"><i class="fas fa-box mr-1"></i> Kho Hàng</button>
             <button onclick="switchTab('orderTab')" id="btn-orderTab" class="flex-1 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition"><i class="fas fa-list-alt mr-1"></i> Đơn Hàng</button>
         </div>
@@ -67,19 +63,16 @@
         <div id="uploadTab" class="p-3 tab-content block mt-2">
             <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Trái: Ảnh (Dạng Khung Đẹp) -->
+                    <!-- Trái: Ảnh -->
                     <div>
-                        <label class="block text-sm font-semibold mb-2 text-gray-700">1. Chọn 1 Ảnh Vuông (Rõ nét):</label>
-                        <div class="relative aspect-square bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden group hover:bg-gray-100 transition cursor-pointer">
+                        <label class="block text-sm font-semibold mb-2 text-gray-700">1. Chọn Ảnh Sản Phẩm:</label>
+                        <div class="relative w-full h-[300px] bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden group hover:bg-gray-100 transition cursor-pointer">
                             <input type="file" id="imageInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewImage(this)">
-                            
-                            <img id="imgPreview" src="" class="w-full h-full object-cover hidden">
-                            
+                            <img id="imgPreview" src="" class="w-full h-full object-contain hidden">
                             <div id="imgPlaceholder" class="text-gray-400 text-sm flex flex-col items-center">
                                 <i class="fas fa-cloud-upload-alt text-4xl mb-2 text-pink-300 group-hover:scale-110 transition-transform"></i>
                                 <span class="font-bold">Bấm để tải ảnh lên</span>
                             </div>
-
                             <button id="btnRemoveImg" onclick="removePreview(event)" class="hidden absolute top-3 right-3 z-20 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -89,17 +82,7 @@
                     <!-- Phải: Thông tin -->
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold mb-2 text-gray-700">2. Mã giày (Tự động):</label>
-                            <div class="flex gap-2">
-                                <input type="text" id="shoeCode" readonly placeholder="Mã ngẫu nhiên..." class="w-full p-2.5 border border-gray-300 rounded-lg bg-gray-100 font-black text-gray-600 outline-none tracking-wider">
-                                <button onclick="generateRandomCode()" class="bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 px-4 rounded-lg font-bold transition shadow-sm" title="Đổi mã khác">
-                                    <i class="fas fa-random"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold mb-2 text-gray-700">3. Chọn Size:</label>
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">2. Chọn Size:</label>
                             <div class="grid grid-cols-5 gap-1.5" id="sizeOptions">
                                 <!-- JS render -->
                             </div>
@@ -111,12 +94,12 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold mb-2 text-gray-700">4. Giá tiền (Tự động):</label>
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">3. Giá tiền (Tự động tính):</label>
                             <div class="relative">
-                                <input type="number" id="shoePrice" class="w-full p-2.5 border border-gray-300 rounded-lg font-black text-pink-600 bg-gray-100 text-lg outline-none" readonly>
+                                <input type="number" id="shoePrice" class="w-full p-2.5 border border-gray-300 rounded-lg font-black bg-gray-100 text-lg text-pink-600 outline-none" readonly>
                                 <span class="absolute right-4 top-2.5 font-bold text-gray-400">VNĐ</span>
                             </div>
-                            <p class="text-[11px] text-gray-500 mt-1.5 font-semibold">≤35.5 (180k) | 36 (230k) | 37-39.5 (260k, Vans/Converse 320k) | ≥40 (380k)</p>
+                            <p class="text-[11px] text-gray-500 mt-1.5 font-semibold">≤35.5 (180k - CV 230k) | 36-36.5 (230k - CV 260k) | 37-39.5 (260k - CV 320k) | ≥40 (380k)</p>
                         </div>
 
                         <button id="btnUpload" onclick="uploadProduct()" class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition mt-4 flex items-center justify-center gap-2">
@@ -129,32 +112,15 @@
 
         <!-- TAB 2: QUẢN LÝ KHO HÀNG -->
         <div id="inventoryTab" class="p-3 tab-content hidden mt-2">
-            
-            <!-- TOOLBAR LỌC & TẢI HÀNG LOẠT -->
             <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 mb-4 flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
-                
-                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full md:w-auto">
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <span class="font-bold text-sm text-gray-700 shrink-0">Lọc Size:</span>
-                        <select id="filterInventorySize" class="border border-gray-300 rounded-lg p-1.5 text-sm font-bold bg-gray-50 w-full sm:w-auto outline-none focus:border-gray-400" onchange="loadInventory()">
-                            <option value="ALL">Tất cả</option>
-                            <option value="Kid">Size Kid</option>
-                            <!-- Các option khác sẽ được render bằng JS -->
-                        </select>
-                    </div>
-                    <!-- Nút Dọn Dẹp Base64 Cũ -->
-                    <button onclick="migrateBase64ToImageKit()" class="mt-2 sm:mt-0 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1">
-                        <i class="fas fa-magic"></i> Tối ưu Database (Đẩy ảnh lên ImageKit)
-                    </button>
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <span class="font-bold text-sm text-gray-700 shrink-0">Lọc Size:</span>
+                    <select id="filterInventorySize" class="border border-gray-300 rounded-lg p-1.5 text-sm font-bold bg-gray-50 w-full md:w-auto outline-none focus:border-gray-400" onchange="loadInventory()">
+                        <option value="Kid">Size Kid</option>
+                    </select>
                 </div>
-
                 <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
-                    <button onclick="selectAllBulk()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold py-2 px-3 rounded-lg transition">
-                        Chọn tất cả
-                    </button>
-                    <button id="btn-download-bulk" onclick="downloadSelectedBulk()" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1">
-                        <i class="fas fa-download"></i> Tải <span id="selectedCount" class="mx-0.5">0</span>
-                    </button>
+                    <button onclick="selectAllBulk()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold py-2 px-3 rounded-lg transition">Chọn tất cả</button>
                     <button id="btn-delete-bulk" onclick="deleteSelectedBulk()" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1">
                         <i class="fas fa-trash-alt"></i> Xóa <span id="deleteCount" class="mx-0.5">0</span>
                     </button>
@@ -162,62 +128,52 @@
             </div>
 
             <h3 class="font-bold mb-3 text-gray-700 text-sm">Kho Hàng (<span id="countAvailable">0</span> đôi)</h3>
-            <div id="adminProductList" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-3">
-                <!-- Data load ở đây -->
-            </div>
+            <div id="adminProductList" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3"></div>
         </div>
 
         <!-- TAB 3: ĐƠN HÀNG -->
         <div id="orderTab" class="p-3 tab-content hidden mt-2">
-            <button onclick="testTelegramBot()" class="w-full bg-blue-50 text-blue-700 py-3 rounded-xl font-bold mb-4 border border-blue-200 active:bg-blue-100 transition shadow-sm text-sm">
-                <i class="fab fa-telegram-plane mr-1 text-lg"></i> Test tin nhắn Bot Telegram
-            </button>
             <h3 class="font-bold mb-3 text-gray-700 text-sm">Lịch sử Yêu cầu tư vấn & Chốt đơn</h3>
-            <div id="adminOrderList" class="space-y-3">
-                <!-- Data load ở đây -->
-            </div>
+            <div id="adminOrderList" class="space-y-3"></div>
         </div>
     </div>
 
     <!-- MODAL CHỈNH SỬA SẢN PHẨM -->
     <div id="editModal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl w-full max-w-sm p-5 shadow-2xl relative">
-            <button onclick="closeEditModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-800">
-                <i class="fas fa-times text-xl"></i>
-            </button>
+            <button onclick="closeEditModal()" class="absolute top-3 right-3 text-gray-400 hover:text-gray-800"><i class="fas fa-times text-xl"></i></button>
             <h3 class="font-bold text-lg mb-4 text-gray-800 border-b pb-2"><i class="fas fa-edit text-orange-500"></i> Sửa thông tin giày</h3>
             
             <input type="hidden" id="edit-id">
             <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Mã giày</label>
-                    <input type="text" id="edit-code" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-bold uppercase focus:border-blue-500 outline-none">
-                </div>
-                <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Size</label>
-                    <input type="text" id="edit-size" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-bold focus:border-blue-500 outline-none">
+                    <input type="text" id="edit-size" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-bold outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Giá bán (VNĐ)</label>
-                    <input type="number" id="edit-price" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-black text-pink-600 focus:border-blue-500 outline-none text-lg">
+                    <input type="number" id="edit-price" class="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 font-black text-pink-600 outline-none text-lg">
                 </div>
             </div>
             
             <div class="flex gap-2 mt-6">
                 <button onclick="closeEditModal()" class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition">Hủy bỏ</button>
-                <button onclick="saveEdit()" class="flex-1 bg-black text-white font-bold py-3 rounded-xl shadow-lg hover:bg-gray-800 transition flex items-center justify-center gap-2">
-                    <i class="fas fa-save"></i> Lưu lại
-                </button>
+                <button onclick="saveEdit()" class="flex-1 bg-black text-white font-bold py-3 rounded-xl shadow-lg hover:bg-gray-800 transition">Lưu lại</button>
             </div>
         </div>
     </div>
 
-    <!-- CANVAS DÙNG ĐỂ RENDER ẢNH WATERMARK VÀ CROP -->
-    <canvas id="watermarkCanvas" class="hidden"></canvas>
+    <!-- MÀN HÌNH LOADING CHỜ XỬ LÝ -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white/80 z-[300] hidden items-center justify-center backdrop-blur-sm">
+        <div class="text-center bg-white p-8 rounded-2xl shadow-2xl border border-gray-100 w-full max-w-xs">
+            <i class="fas fa-circle-notch fa-spin text-5xl text-pink-500 mb-4"></i>
+            <p class="text-sm font-bold text-gray-800" id="loadingText">Đang xử lý...</p>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, writeBatch, getDocs, query, where, limit, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, writeBatch, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // FIREBASE CONFIG
         const fbP1 = "AIzaSyCVAm"; const fbP2 = "JO1KViXVg3"; const fbP3 = "kizelTp6CZ"; const fbP4 = "AFmJLkKiM";
@@ -227,18 +183,37 @@
             projectId: "donggia-8ef8e",
             storageBucket: "donggia-8ef8e.firebasestorage.app"
         };
-        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        // Cấu hình ImageKit Authentication (Sử dụng Private Key)
-        const imageKitPrivateKey = "private_ayTs6CE91ZpBtxpipgz2GmpKdjU=";
-        const imageKitAuthToken = btoa(imageKitPrivateKey + ":"); // Mã hóa theo chuẩn Basic Auth
-        const imageKitUploadEndpoint = "https://upload.imagekit.io/api/v1/files/upload";
+        // IMAGEKIT API KEY
+        const IK_PUBLIC_KEY = "public_TpeJE8MFvbvFRcBM4tQkurCc/0I=";
+        const IK_PRIVATE_KEY = "private_ayTs6CE91ZpBtxpipgz2GmpKdjU="; 
 
         let allProductsRaw = [];
 
-        // CUSTOM DIALOGS
+        // HÀM TẠO CHỮ KÝ BẢO MẬT CHO IMAGEKIT
+        async function generateIKAuth() {
+            const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const expire = Math.floor(Date.now() / 1000) + 60 * 30;
+            const str = token + expire;
+            
+            const enc = new TextEncoder();
+            const key = await crypto.subtle.importKey(
+                "raw", enc.encode(IK_PRIVATE_KEY),
+                { name: "HMAC", hash: "SHA-1" },
+                false, ["sign"]
+            );
+            const signatureBuffer = await crypto.subtle.sign("HMAC", key, enc.encode(str));
+            const signatureArray = Array.from(new Uint8Array(signatureBuffer));
+            return { 
+                token: token, 
+                expire: expire, 
+                signature: signatureArray.map(b => b.toString(16).padStart(2, '0')).join('') 
+            };
+        }
+
+        // HỆ THỐNG DIALOG
         window.showAlert = function(msg) {
             document.getElementById('dialogMessage').innerText = msg;
             document.getElementById('dialogButtons').innerHTML = `<button onclick="closeDialog()" class="px-6 py-2 bg-pink-600 text-white font-bold rounded-xl hover:bg-pink-700 transition w-full">OK</button>`;
@@ -256,7 +231,18 @@
         window.closeDialog = function() { document.getElementById('customDialog').classList.add('hidden'); }
         window.executeConfirm = function() { closeDialog(); if(window.currentConfirmCallback) window.currentConfirmCallback(); }
 
-        // 1. ĐĂNG NHẬP
+        // LOADING OVERLAY
+        window.showLoading = function(text) {
+            document.getElementById('loadingText').innerText = text;
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.getElementById('loadingOverlay').classList.add('flex');
+        }
+        window.hideLoading = function() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+            document.getElementById('loadingOverlay').classList.remove('flex');
+        }
+
+        // ĐĂNG NHẬP
         window.checkLogin = function() {
             if(document.getElementById('passCode').value === '3119') {
                 document.getElementById('loginSection').classList.add('hidden');
@@ -270,7 +256,6 @@
         function initAdmin() {
             const sizeContainer = document.getElementById('sizeOptions');
             const filterSizeSelect = document.getElementById('filterInventorySize');
-            
             sizes.forEach(s => {
                 sizeContainer.innerHTML += `
                     <div class="text-center">
@@ -280,22 +265,10 @@
                 `;
                 if(s !== 'Kid') filterSizeSelect.innerHTML += `<option value="${s}">Size ${s}</option>`;
             });
-            
-            generateRandomCode();
             fetchInventoryData();
             loadOrders();
         }
 
-        // TẠO MÃ TỰ ĐỘNG
-        window.generateRandomCode = function() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const nums = '0123456789';
-            let res = chars.charAt(Math.floor(Math.random() * chars.length));
-            for(let i=0; i<3; i++) res += nums.charAt(Math.floor(Math.random() * nums.length));
-            document.getElementById('shoeCode').value = res;
-        }
-
-        // 2. TÍNH GIÁ (Cho Upload)
         window.toggleSpecialBrand = function() {
             const cb = document.getElementById('isSpecialBrand');
             cb.checked = !cb.checked;
@@ -306,33 +279,19 @@
             const isSpecial = document.getElementById('isSpecialBrand').checked;
             const sizeInput = document.querySelector('input[name="size"]:checked');
             const priceInput = document.getElementById('shoePrice');
-            
             if (sizeInput) {
-                let sVal = sizeInput.value;
-                let sNum = parseFloat(sVal);
-                
-                if (sVal === 'Kid' || sNum <= 35.5) {
-                    priceInput.value = 180000;
-                } else if (sNum === 36 || sNum === 36.5) {
-                    priceInput.value = 230000;
-                } else if (sNum >= 37 && sNum <= 39.5) {
-                    if (isSpecial) priceInput.value = 320000;
-                    else priceInput.value = 260000;
-                } else if (sNum >= 40) {
-                    priceInput.value = 380000;
-                } else {
-                    priceInput.value = 0;
-                }
-            } else {
-                priceInput.value = 0;
-            }
+                let sNum = parseFloat(sizeInput.value);
+                if (sizeInput.value === 'Kid' || sNum <= 35.5) priceInput.value = isSpecial ? 230000 : 180000;
+                else if (sNum === 36 || sNum === 36.5) priceInput.value = isSpecial ? 260000 : 230000;
+                else if (sNum >= 37 && sNum <= 39.5) priceInput.value = isSpecial ? 320000 : 260000;
+                else if (sNum >= 40) priceInput.value = 380000;
+            } else priceInput.value = 0;
         }
 
-        // 3. UPLOAD ẢNH LÊN IMAGEKIT & DATA LÊN FIRESTORE
         window.previewImage = function(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     document.getElementById('imgPreview').src = e.target.result;
                     document.getElementById('imgPreview').classList.remove('hidden');
                     document.getElementById('imgPlaceholder').classList.add('hidden');
@@ -343,7 +302,7 @@
         }
 
         window.removePreview = function(e) {
-            if(e) e.preventDefault();
+            e.preventDefault();
             document.getElementById('imageInput').value = '';
             document.getElementById('imgPreview').src = '';
             document.getElementById('imgPreview').classList.add('hidden');
@@ -351,116 +310,133 @@
             document.getElementById('btnRemoveImg').classList.add('hidden');
         }
 
-        // HÀM UPLOAD GIÀY MỚI (LÊN IMAGEKIT)
+        // --- HÀM NÉN ẢNH (GIỮ NGUYÊN TỈ LỆ) & TẢI LÊN IMAGEKIT ---
         window.uploadProduct = async function() {
-            const code = document.getElementById('shoeCode').value.toUpperCase().trim();
             const sizeInput = document.querySelector('input[name="size"]:checked');
             const price = parseInt(document.getElementById('shoePrice').value);
             const imgFile = document.getElementById('imageInput').files[0];
             const btn = document.getElementById('btnUpload');
 
-            if(!code || !sizeInput || !price || !imgFile) { window.showAlert('Điền đủ Mã, Size, Giá và Ảnh nhé!'); return; }
+            if(!sizeInput || !price || !imgFile) { window.showAlert('Vui lòng chọn Size và Tải ảnh lên!'); return; }
 
-            btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý ảnh...';
+            btn.disabled = true; 
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang nén & Tải lên...';
 
             try {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const img = new Image();
-                    img.onload = async function() {
-                        // Nén ảnh vuông 800x800px bằng Canvas
-                        const canvas = document.createElement('canvas');
-                        const TARGET_SIZE = 800;
-                        canvas.width = TARGET_SIZE;
-                        canvas.height = TARGET_SIZE;
-                        const ctx = canvas.getContext('2d');
+                    img.onload = function() {
+                        // Nén ảnh giữ nguyên tỉ lệ, Max dimension = 1000px
+                        const MAX_DIMENSION = 1000;
+                        let width = img.width;
+                        let height = img.height;
 
-                        const minDim = Math.min(img.width, img.height);
-                        const startX = (img.width - minDim) / 2;
-                        const startY = (img.height - minDim) / 2;
-
-                        ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, TARGET_SIZE, TARGET_SIZE);
-                        const base64Img = canvas.toDataURL('image/jpeg', 0.8);
-
-                        try {
-                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải lên ImageKit...';
-                            
-                            // Call API đẩy lên ImageKit
-                            const formData = new FormData();
-                            formData.append("file", base64Img); // Hỗ trợ luôn chuỗi Base64
-                            formData.append("fileName", `shoes_${code}_${Date.now()}.jpg`);
-                            formData.append("folder", "/bexiu_shoes"); // Thư mục lưu trên ImageKit
-
-                            const uploadRes = await fetch(imageKitUploadEndpoint, {
-                                method: "POST",
-                                headers: {
-                                    "Authorization": "Basic " + imageKitAuthToken
-                                },
-                                body: formData
-                            });
-                            
-                            const uploadData = await uploadRes.json();
-                            if(!uploadRes.ok) throw new Error(uploadData.message || 'Lỗi API ImageKit');
-                            
-                            const imageUrl = uploadData.url; // Link ảnh sau khi up thành công
-
-                            // Lưu URL vào Firestore
-                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu Database...';
-                            await addDoc(collection(db, "products"), {
-                                code: code, size: sizeInput.value, price: price,
-                                imageUrl: imageUrl, images: [imageUrl], status: 'available',
-                                createdAt: serverTimestamp()
-                            });
-
-                            window.showAlert('✅ Đăng sản phẩm thành công!');
-                            
-                            window.generateRandomCode();
-                            window.removePreview();
-                            if(sizeInput) sizeInput.checked = false;
-                            document.getElementById('shoePrice').value = '';
-                            document.getElementById('isSpecialBrand').checked = false;
-                            
-                            btn.disabled = false; btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Đăng Lên Web';
-                        } catch (err) {
-                            window.showAlert('Lỗi tải lên: ' + err.message);
-                            btn.disabled = false; btn.innerHTML = 'Đăng Lỗi - Thử Lại';
+                        if (width > height) {
+                            if (width > MAX_DIMENSION) {
+                                height *= MAX_DIMENSION / width;
+                                width = MAX_DIMENSION;
+                            }
+                        } else {
+                            if (height > MAX_DIMENSION) {
+                                width *= MAX_DIMENSION / height;
+                                height = MAX_DIMENSION;
+                            }
                         }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Xuất Blob JPEG chất lượng 0.8
+                        canvas.toBlob(async (blob) => {
+                            try {
+                                const auth = await generateIKAuth();
+                                const formData = new FormData();
+                                // Đặt tên file ngẫu nhiên vì đã bỏ mã giày
+                                const fileName = "bx_" + Date.now() + Math.random().toString(36).substring(7) + ".jpg";
+
+                                formData.append("file", blob);
+                                formData.append("fileName", fileName);
+                                formData.append("folder", "/bexiu_shoes");
+                                formData.append("publicKey", IK_PUBLIC_KEY);
+                                formData.append("signature", auth.signature);
+                                formData.append("expire", auth.expire);
+                                formData.append("token", auth.token);
+
+                                const res = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+                                    method: "POST",
+                                    body: formData
+                                });
+
+                                if(!res.ok) throw new Error("ImageKit từ chối tải ảnh");
+                                const ikData = await res.json();
+
+                                // Lưu vào Firestore (không lưu mã giày nữa)
+                                await addDoc(collection(db, "products"), {
+                                    size: sizeInput.value, 
+                                    price: price,
+                                    imageUrl: ikData.url, 
+                                    ikFileId: ikData.fileId, 
+                                    status: 'available', 
+                                    createdAt: serverTimestamp()
+                                });
+
+                                window.showAlert('✅ Đăng giày lên kệ thành công!');
+                                window.removePreview(new Event('click'));
+                                sizeInput.checked = false;
+                                document.getElementById('shoePrice').value = '';
+                                
+                            } catch (err) {
+                                window.showAlert('Lỗi tải lên ImageKit: ' + err.message);
+                            } finally {
+                                btn.disabled = false; btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Đăng Lên Web';
+                            }
+                        }, 'image/jpeg', 0.8);
                     };
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(imgFile);
             } catch (err) {
-                window.showAlert('Lỗi xử lý file: ' + err.message);
+                window.showAlert('Lỗi hệ thống: ' + err.message);
                 btn.disabled = false; btn.innerHTML = 'Đăng Lỗi - Thử Lại';
             }
         }
 
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('[id^="btn-"]').forEach(btn => btn.className = "flex-1 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition");
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => btn.className = "flex-1 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-md transition border border-transparent");
             document.getElementById(tabId).classList.remove('hidden');
             document.getElementById('btn-' + tabId).className = "flex-1 py-2 text-sm font-bold bg-pink-50 text-pink-600 rounded-md transition border border-pink-100 shadow-sm";
         }
 
-        // 4. KHO HÀNG & LỌC
+        const parseTimestamp = (val) => {
+            if (!val) return 0;
+            if (typeof val.toMillis === 'function') return val.toMillis();
+            if (val.seconds) return val.seconds * 1000;
+            if (val instanceof Date) return val.getTime();
+            if (typeof val === 'number') return val;
+            return new Date(val).getTime() || 0;
+        };
+
+        // --- KHO HÀNG ---
         function fetchInventoryData() {
             onSnapshot(collection(db, "products"), (snapshot) => {
                 allProductsRaw = [];
                 snapshot.forEach((docSnap) => {
                     const data = docSnap.data();
-                    if(data.status === 'available' || !data.isSold) {
-                        const img = (data.images && data.images.length > 0) ? data.images[0] : data.imageUrl;
+                    if(data.status === 'available' || !data.status || !data.isSold) {
+                        const img = data.imageUrl || (data.images && data.images.length > 0 ? data.images[0] : '');
                         allProductsRaw.push({ id: docSnap.id, ...data, img: img });
                     }
                 });
                 
-                allProductsRaw.sort((a, b) => {
-                    const timeA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : 0) : 0;
-                    const timeB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : 0) : 0;
-                    return timeB - timeA;
-                });
-                
+                allProductsRaw.sort((a, b) => parseTimestamp(b.createdAt) - parseTimestamp(a.createdAt));
                 window.loadInventory();
+            }, (error) => {
+                window.showAlert("Lỗi tải dữ liệu kho hàng: " + error.message);
             });
         }
 
@@ -469,40 +445,26 @@
             const filterSize = document.getElementById('filterInventorySize').value;
             container.innerHTML = '';
             
-            let displayProducts = allProductsRaw;
-            if(filterSize !== 'ALL') {
-                displayProducts = allProductsRaw.filter(p => String(p.size).trim() === filterSize);
-            }
+            let displayProducts = allProductsRaw.filter(p => String(p.size).trim() === filterSize);
             
             document.getElementById('countAvailable').innerText = displayProducts.length;
 
             displayProducts.forEach((p) => {
                 container.innerHTML += `
                     <div class="bg-white border border-gray-200 rounded-xl p-2 text-center shadow-sm flex flex-col justify-between relative group">
-                        
                         <div class="absolute top-3 left-3 z-10">
                             <input type="checkbox" class="bulk-cb bg-white border-2 shadow" 
-                                value="${p.id}" 
-                                data-img="${p.img}" 
-                                data-code="${p.code}" 
-                                data-size="${p.size}" 
-                                data-price="${p.price}"
-                                onchange="updateSelectedCount()">
+                                value="${p.id}" onchange="updateSelectedCount()">
                         </div>
-
                         <div>
-                            <div class="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-2 relative cursor-pointer" onclick="openZoom('${p.img}')">
+                            <div class="w-full h-32 bg-gray-50 rounded-lg overflow-hidden mb-2 relative cursor-pointer" onclick="openZoom('${p.img}')">
                                 <img src="${p.img}" class="w-full h-full object-cover">
-                                <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i class="fas fa-search text-white text-xl"></i></div>
                             </div>
-                            <div class="font-black text-sm text-gray-800">#${p.code}</div>
-                            <div class="text-[11px] font-bold text-pink-600 bg-pink-50 py-0.5 rounded mt-1 border border-pink-100">Size ${p.size} • ${Number(p.price).toLocaleString('vi-VN')}đ</div>
+                            <div class="text-[11px] font-bold text-pink-600 bg-pink-50 py-1 rounded mt-1 border border-pink-100">Size ${p.size} • ${Number(p.price).toLocaleString('vi-VN')}đ</div>
                         </div>
-                        
                         <div class="flex items-center gap-1 mt-3">
-                            <button onclick="downloadImageWithText('${p.img}', '${p.code}', '${p.size}', ${p.price})" class="flex-1 text-[10px] sm:text-xs bg-green-50 text-green-600 hover:bg-green-100 py-1.5 rounded font-bold transition" title="Tải ảnh lẻ"><i class="fas fa-download"></i></button>
-                            <button onclick="openEditModal('${p.id}', '${p.code}', '${p.size}', ${p.price})" class="flex-1 text-[10px] sm:text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 py-1.5 rounded font-bold transition"><i class="fas fa-pen"></i></button>
-                            <button onclick="deleteProduct('${p.id}')" class="flex-1 text-[10px] sm:text-xs bg-red-50 text-red-500 hover:bg-red-100 py-1.5 rounded font-bold transition"><i class="fas fa-trash"></i></button>
+                            <button onclick="openEditModal('${p.id}', '${p.size}', ${p.price})" class="flex-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 py-2 rounded font-bold transition"><i class="fas fa-pen"></i> Sửa</button>
+                            <button onclick="deleteProduct('${p.id}')" class="flex-1 text-xs bg-red-50 text-red-500 hover:bg-red-100 py-2 rounded font-bold transition"><i class="fas fa-trash"></i> Xóa</button>
                         </div>
                     </div>
                 `;
@@ -510,65 +472,9 @@
             window.updateSelectedCount(); 
         }
 
-        // --- CÔNG CỤ DỌN DẸP DATABASE (CHUYỂN BASE64 SANG IMAGEKIT) ---
-        window.migrateBase64ToImageKit = async function() {
-            // Lọc ra các sản phẩm đang xài ảnh dạng "data:image..."
-            const base64Products = allProductsRaw.filter(p => p.img && p.img.startsWith('data:image'));
-            
-            if (base64Products.length === 0) {
-                window.showAlert('Tuyệt vời! Không có ảnh Base64 nặng nào trong Kho hàng hiện tại. Database của bạn đang rất tối ưu.');
-                return;
-            }
-
-            window.showConfirm(`Phát hiện ${base64Products.length} sản phẩm dùng ảnh Base64 làm nặng Database.\nBạn có muốn tự động đẩy chúng lên kho ImageKit không? (Nên mở treo máy tính vài phút)`, async () => {
-                window.showAlert(`Đang tiến hành đẩy lên ImageKit ${base64Products.length} ảnh. Vui lòng KHÔNG đóng trình duyệt lúc này...`);
-                let successCount = 0;
-                
-                for (let p of base64Products) {
-                    try {
-                        const formData = new FormData();
-                        formData.append("file", p.img);
-                        formData.append("fileName", `shoes_${p.code}_migrate_${Date.now()}.jpg`);
-                        formData.append("folder", "/bexiu_shoes");
-
-                        const uploadRes = await fetch(imageKitUploadEndpoint, {
-                            method: "POST",
-                            headers: {
-                                "Authorization": "Basic " + imageKitAuthToken
-                            },
-                            body: formData
-                        });
-                        
-                        const uploadData = await uploadRes.json();
-                        if(!uploadRes.ok) throw new Error(uploadData.message || 'Lỗi API ImageKit');
-                        
-                        const downloadUrl = uploadData.url;
-
-                        // Cập nhật lại doc trên firestore bằng đường link ImageKit
-                        await updateDoc(doc(db, "products", p.id), {
-                            imageUrl: downloadUrl,
-                            images: [downloadUrl]
-                        });
-                        
-                        successCount++;
-                        console.log(`Đã đẩy thành công: ${p.code} lên ImageKit`);
-                    } catch (error) {
-                        console.error(`Lỗi tối ưu ${p.code}:`, error);
-                    }
-                }
-                
-                window.showAlert(`✅ Quá trình tối ưu hoàn tất! Đã chuyển ${successCount}/${base64Products.length} ảnh sang ImageKit.`);
-            });
-        }
-        // ----------------------------------------------------------------
-
-        // TÍNH NĂNG CHỌN VÀ TẢI / XÓA HÀNG LOẠT
         window.updateSelectedCount = function() {
             const count = document.querySelectorAll('.bulk-cb:checked').length;
-            const countEl = document.getElementById('selectedCount');
-            const delCountEl = document.getElementById('deleteCount');
-            if(countEl) countEl.innerText = count;
-            if(delCountEl) delCountEl.innerText = count;
+            document.getElementById('deleteCount').innerText = count;
         }
 
         window.selectAllBulk = function() {
@@ -578,239 +484,101 @@
             window.updateSelectedCount();
         }
 
-        window.deleteSelectedBulk = async function() {
-            const checkedBoxes = document.querySelectorAll('.bulk-cb:checked');
-            if (checkedBoxes.length === 0) {
-                window.showAlert('Vui lòng tick chọn ít nhất 1 ảnh để xóa!');
-                return;
-            }
-
-            window.showConfirm(`Bạn có chắc chắn muốn XÓA VĨNH VIỄN ${checkedBoxes.length} đôi giày đã chọn khỏi kho không?`, async () => {
-                const btn = document.getElementById('btn-delete-bulk');
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
-                btn.disabled = true;
-
-                try {
-                    let batch = writeBatch(db);
-                    let count = 0;
-
-                    for (let i = 0; i < checkedBoxes.length; i++) {
-                        const id = checkedBoxes[i].value;
-                        batch.delete(doc(db, "products", id));
-                        count++;
-                        
-                        if (count === 400) {
-                            await batch.commit();
-                            batch = writeBatch(db);
-                            count = 0;
-                        }
-                    }
-                    
-                    if (count > 0) {
-                        await batch.commit();
-                    }
-
-                    window.showAlert(`✅ Đã xóa thành công ${checkedBoxes.length} sản phẩm!`);
-                    window.updateSelectedCount();
-                } catch (error) {
-                    console.error("Lỗi khi xóa:", error);
-                    window.showAlert("Có lỗi xảy ra khi xóa: " + error.message);
-                } finally {
-                    btn.innerHTML = `<i class="fas fa-trash-alt"></i> Xóa <span id="deleteCount" class="mx-0.5">0</span>`;
-                    btn.disabled = false;
-                }
-            });
+        // XÓA ẢNH TRÊN CẢ FIREBASE VÀ IMAGEKIT
+        window.deleteIKFile = async function(fileId) {
+            if(!fileId) return;
+            try {
+                await fetch(`https://api.imagekit.io/v1/files/${fileId}`, {
+                    method: "DELETE", headers: { "Authorization": "Basic " + btoa(IK_PRIVATE_KEY + ":") }
+                });
+            } catch(e) {}
         }
 
-        window.downloadSelectedBulk = async function() {
-            const checkedBoxes = document.querySelectorAll('.bulk-cb:checked');
-            if (checkedBoxes.length === 0) {
-                window.showAlert('Vui lòng tick chọn ít nhất 1 ảnh để tải!');
-                return;
-            }
-
-            const btn = document.getElementById('btn-download-bulk');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
-            btn.disabled = true;
-
-            for (let i = 0; i < checkedBoxes.length; i++) {
-                const cb = checkedBoxes[i];
-                await window.downloadImageWithText(
-                    cb.getAttribute('data-img'), 
-                    cb.getAttribute('data-code'), 
-                    cb.getAttribute('data-size'), 
-                    cb.getAttribute('data-price'),
-                    true 
-                );
-                
-                await new Promise(resolve => setTimeout(resolve, 400));
-            }
-
-            btn.innerHTML = `<i class="fas fa-download"></i> Tải <span id="selectedCount" class="mx-0.5">${checkedBoxes.length}</span>`;
-            btn.disabled = false;
-            
-            document.querySelectorAll('.bulk-cb:checked').forEach(cb => cb.checked = false);
-            window.updateSelectedCount();
-            
-            window.showAlert(`✅ Đã gửi lệnh tải ${checkedBoxes.length} ảnh! (Nếu trình duyệt hỏi "Allow download multiple files", hãy bấm Cho phép nhé)`);
-        }
-
-        // TÍNH NĂNG XÓA VÀ SỬA TỪNG SẢN PHẨM
         window.deleteProduct = function(id) {
             window.showConfirm('Chắc chắn xóa đôi này khỏi kho?', async () => {
+                const p = allProductsRaw.find(x => x.id === id);
+                if(p && p.ikFileId) await window.deleteIKFile(p.ikFileId);
                 await deleteDoc(doc(db, "products", id));
             });
         }
 
-        window.openEditModal = function(id, code, size, price) {
-            document.getElementById('edit-id').value = id;
-            document.getElementById('edit-code').value = code;
-            document.getElementById('edit-size').value = size;
+        window.deleteSelectedBulk = async function() {
+            const checkedBoxes = document.querySelectorAll('.bulk-cb:checked');
+            if (checkedBoxes.length === 0) return window.showAlert('Chưa chọn ảnh nào!');
+
+            window.showConfirm(`XÓA VĨNH VIỄN ${checkedBoxes.length} đôi giày (bao gồm cả ảnh trên ImageKit)?`, async () => {
+                window.showLoading(`Đang xóa ${checkedBoxes.length} sản phẩm...`);
+
+                try {
+                    let batch = writeBatch(db);
+                    let count = 0;
+                    for (let i = 0; i < checkedBoxes.length; i++) {
+                        const id = checkedBoxes[i].value;
+                        const p = allProductsRaw.find(x => x.id === id);
+                        if(p && p.ikFileId) await window.deleteIKFile(p.ikFileId);
+                        
+                        batch.delete(doc(db, "products", id));
+                        count++;
+                        if (count === 400) { await batch.commit(); batch = writeBatch(db); count = 0; }
+                    }
+                    if (count > 0) await batch.commit();
+                    window.hideLoading();
+                    window.showAlert(`✅ Đã dọn dẹp ${checkedBoxes.length} sản phẩm!`);
+                } catch (error) {
+                    window.hideLoading();
+                    window.showAlert("Lỗi xóa: " + error.message);
+                } 
+            });
+        }
+
+        window.openEditModal = function(id, size, price) {
+            document.getElementById('edit-id').value = id; 
+            document.getElementById('edit-size').value = size; 
             document.getElementById('edit-price').value = price;
             document.getElementById('editModal').classList.remove('hidden');
         }
-
         window.closeEditModal = function() { document.getElementById('editModal').classList.add('hidden'); }
 
         window.saveEdit = async function() {
             const id = document.getElementById('edit-id').value;
-            const code = document.getElementById('edit-code').value.toUpperCase().trim();
             const size = document.getElementById('edit-size').value.trim();
             const price = Number(document.getElementById('edit-price').value);
-
-            if(!code || !size || !price) { window.showAlert('Vui lòng nhập đủ thông tin!'); return; }
-
+            if(!size || !price) return window.showAlert('Vui lòng nhập đủ!');
             try {
-                await updateDoc(doc(db, "products", id), { code: code, size: size, price: price });
-                window.closeEditModal();
-                window.showAlert('✅ Lưu thông tin thành công!');
-            } catch (error) { window.showAlert('Lỗi cập nhật: ' + error.message); }
+                await updateDoc(doc(db, "products", id), { size: size, price: price });
+                window.closeEditModal(); window.showAlert('✅ Lưu thành công!');
+            } catch (error) { window.showAlert('Lỗi: ' + error.message); }
         }
 
-        // TÍNH NĂNG WATERMARK CẢI TIẾN
-        function drawRoundedRect(ctx, x, y, width, height, radius) {
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        window.downloadImageWithText = function(imgUrl, code, size, price, isBulk = false) {
-            return new Promise((resolve) => {
-                const canvas = document.getElementById('watermarkCanvas');
-                const ctx = canvas.getContext('2d');
-                const img = new Image();
-                
-                img.crossOrigin = 'anonymous'; 
-                const isBase64 = imgUrl.startsWith('data:image');
-                img.src = isBase64 ? imgUrl : imgUrl + (imgUrl.includes('?') ? '&' : '?') + 'not-from-cache';
-
-                img.onload = () => {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-
-                    ctx.drawImage(img, 0, 0);
-
-                    const text = `Mã: ${code} - Size: ${size} - Giá: ${Number(price).toLocaleString('vi-VN')}đ`;
-                    const fontSize = Math.max(20, Math.floor(canvas.width / 28)); 
-                    ctx.font = `bold ${fontSize}px sans-serif`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-
-                    const textWidth = ctx.measureText(text).width;
-                    const paddingX = fontSize * 1.5;
-                    const paddingY = fontSize * 0.8;
-                    
-                    const boxWidth = textWidth + paddingX;
-                    const boxHeight = fontSize + paddingY;
-                    const x = canvas.width / 2;
-                    
-                    const y = canvas.height - (boxHeight / 2) - 15; 
-                    
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                    drawRoundedRect(ctx, x - (boxWidth / 2), y - (boxHeight / 2), boxWidth, boxHeight, boxHeight / 2.5);
-
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillText(text, x, y + (fontSize * 0.05));
-
-                    const link = document.createElement('a');
-                    link.download = `BeXiu_${code}_Size${size}.jpg`;
-                    link.href = canvas.toDataURL('image/jpeg', 0.95);
-                    link.click();
-                    resolve(true);
-                };
-
-                img.onerror = () => {
-                    if(!isBulk) window.showAlert('Trình duyệt chặn ghép chữ. Hệ thống sẽ tải ảnh gốc!');
-                    const link = document.createElement('a');
-                    link.download = `BeXiu_${code}.jpg`;
-                    link.href = imgUrl;
-                    link.target = '_blank';
-                    link.click();
-                    resolve(false);
-                };
-            });
-        }
-
-        // ĐƠN HÀNG VÀ TELEGRAM
         window.loadOrders = function() {
-            const q = query(collection(db, "orders"), orderBy("timestamp", "desc"), limit(20));
-            onSnapshot(q, (snapshot) => {
-                const container = document.getElementById('adminOrderList');
-                container.innerHTML = '';
+            onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc"), limit(30)), (snapshot) => {
+                const container = document.getElementById('adminOrderList'); container.innerHTML = '';
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     const date = data.timestamp ? (data.timestamp.toDate ? data.timestamp.toDate().toLocaleString('vi-VN') : 'Mới') : 'Mới';
-                    
                     container.innerHTML += `
                         <div class="bg-white p-3.5 rounded-xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between gap-3">
-                            <div class="flex flex-col">
-                                <div class="flex items-center gap-2">
-                                    <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold">${date}</span>
-                                    <span class="bg-pink-100 text-pink-700 text-[10px] px-2 py-0.5 rounded font-bold">Chốt Nhanh</span>
+                            <div class="flex items-center gap-4">
+                                <a href="${data.imageUrl}" target="_blank">
+                                    <img src="${data.imageUrl}" class="w-16 h-16 object-cover rounded-lg border border-gray-100">
+                                </a>
+                                <div class="flex flex-col">
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold">${date}</span>
+                                    </div>
+                                    <div class="font-bold text-gray-800 mt-1">${data.customerName || 'Khách'} - <a href="https://zalo.me/${data.customerPhone}" target="_blank" class="text-blue-600 underline">${data.customerPhone}</a></div>
+                                    <div class="text-xs font-black text-pink-600 mt-1">Size ${data.size} - ${(data.price || 0).toLocaleString('vi-VN')}đ</div>
                                 </div>
-                                <div class="font-bold text-gray-800 mt-1">${data.customerName || 'Khách'} - <a href="https://zalo.me/${data.customerPhone}" target="_blank" class="text-blue-600 underline">${data.customerPhone}</a></div>
-                                <div class="text-[11px] text-gray-500">${data.customerAddress || 'Hỏi qua Zalo'}</div>
-                                <div class="text-xs font-black text-pink-600 mt-1">Giày: ${data.productCode} (Size ${data.size}) - ${(data.price || 0).toLocaleString('vi-VN')}đ</div>
                             </div>
                             <div class="flex items-center">
-                                <button onclick="deleteOrder('${docSnap.id}')" class="bg-red-50 text-red-500 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-100 w-full md:w-auto transition"><i class="fas fa-trash"></i> Xóa đơn</button>
+                                <button onclick="deleteDoc(doc(db, 'orders', '${docSnap.id}'))" class="bg-red-50 text-red-500 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-100 w-full md:w-auto transition"><i class="fas fa-trash"></i> Xóa đơn</button>
                             </div>
                         </div>
                     `;
                 });
             });
         }
-
-        window.deleteOrder = function(id) { 
-            window.showConfirm('Xóa bản ghi đơn hàng này?', async () => {
-                await deleteDoc(doc(db, "orders", id));
-            });
-        }
-
-        window.testTelegramBot = function() {
-            const token = "8968912621:AAFKK2PQuPNqWLLer4_wkZf6PtY1ZzHV9RI";
-            const id = "8511070091";
-            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: id, text: "✅ Test thành công! Bot đã kết nối hoàn hảo với trang Admin Bé Xíu." })
-            }).then(res => {
-                if(res.ok) window.showAlert('✅ Đã gửi tin nhắn test! Bạn mở Telegram xem có nhận được chưa.');
-                else window.showAlert('❌ Gửi lỗi! Đảm bảo bạn đã mở Telegram, tìm bot và bấm START.');
-            });
-        }
-        
-        window.openZoom = function(url) {
-            window.open(url, '_blank');
-        }
+        window.openZoom = function(url) { window.open(url, '_blank'); }
     </script>
 </body>
 </html>
