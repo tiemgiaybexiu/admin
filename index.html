@@ -112,6 +112,15 @@
 
         <!-- TAB 2: QUẢN LÝ KHO HÀNG -->
         <div id="inventoryTab" class="p-3 tab-content hidden mt-2">
+            <!-- Nút Hủy Diệt Tạm Thời -->
+            <div class="mb-4 bg-red-50 p-4 rounded-xl border border-red-200 text-center shadow-sm">
+                <h4 class="text-red-600 font-bold mb-2"><i class="fas fa-exclamation-triangle"></i> Công cụ làm sạch kho (Tạm thời)</h4>
+                <button onclick="nukeEverything()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition w-full md:w-auto">
+                    <i class="fas fa-bomb mr-2"></i> Xóa Sạch Toàn Bộ 100% Giày
+                </button>
+                <p class="text-xs text-red-500 mt-2 font-medium">Lưu ý: Nút này quét và xóa toàn bộ giày ở TẤT CẢ các size cùng lúc.</p>
+            </div>
+
             <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 mb-4 flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
                 <div class="flex items-center gap-2 w-full md:w-auto">
                     <span class="font-bold text-sm text-gray-700 shrink-0">Lọc Size:</span>
@@ -491,13 +500,13 @@
                 await fetch(`https://api.imagekit.io/v1/files/${fileId}`, {
                     method: "DELETE", headers: { "Authorization": "Basic " + btoa(IK_PRIVATE_KEY + ":") }
                 });
-            } catch(e) {}
+            } catch(e) { console.log("Bỏ qua lỗi xóa IK"); }
         }
 
         window.deleteProduct = function(id) {
             window.showConfirm('Chắc chắn xóa đôi này khỏi kho?', async () => {
                 const p = allProductsRaw.find(x => x.id === id);
-                if(p && p.ikFileId) await window.deleteIKFile(p.ikFileId);
+                if(p && p.ikFileId) window.deleteIKFile(p.ikFileId).catch(()=>{});
                 await deleteDoc(doc(db, "products", id));
             });
         }
@@ -506,24 +515,32 @@
             const checkedBoxes = document.querySelectorAll('.bulk-cb:checked');
             if (checkedBoxes.length === 0) return window.showAlert('Chưa chọn ảnh nào!');
 
-            window.showConfirm(`XÓA VĨNH VIỄN ${checkedBoxes.length} đôi giày (bao gồm cả ảnh trên ImageKit)?`, async () => {
+            window.showConfirm(`XÓA VĨNH VIỄN ${checkedBoxes.length} đôi giày (bao gồm cả ảnh)?`, async () => {
                 window.showLoading(`Đang xóa ${checkedBoxes.length} sản phẩm...`);
 
                 try {
-                    let batch = writeBatch(db);
                     let count = 0;
                     for (let i = 0; i < checkedBoxes.length; i++) {
                         const id = checkedBoxes[i].value;
                         const p = allProductsRaw.find(x => x.id === id);
-                        if(p && p.ikFileId) await window.deleteIKFile(p.ikFileId);
                         
-                        batch.delete(doc(db, "products", id));
+                        // Xóa ngầm ảnh trên ImageKit (không chờ để tránh kẹt mạng)
+                        if(p && p.ikFileId) {
+                            window.deleteIKFile(p.ikFileId).catch(()=>{});
+                        }
+                        
+                        // Xóa trực tiếp ngay trên Firebase
+                        await deleteDoc(doc(db, "products", id));
                         count++;
-                        if (count === 400) { await batch.commit(); batch = writeBatch(db); count = 0; }
+                        
+                        document.getElementById('loadingText').innerText = `Đang xóa: ${count} / ${checkedBoxes.length} đôi...`;
                     }
-                    if (count > 0) await batch.commit();
+                    
                     window.hideLoading();
                     window.showAlert(`✅ Đã dọn dẹp ${checkedBoxes.length} sản phẩm!`);
+                    
+                    document.querySelectorAll('.bulk-cb').forEach(cb => cb.checked = false);
+                    window.updateSelectedCount();
                 } catch (error) {
                     window.hideLoading();
                     window.showAlert("Lỗi xóa: " + error.message);
