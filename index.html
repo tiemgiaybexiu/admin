@@ -112,14 +112,6 @@
 
         <!-- TAB 2: QUẢN LÝ KHO HÀNG -->
         <div id="inventoryTab" class="p-3 tab-content hidden mt-2">
-            <!-- Nút Hủy Diệt Tạm Thời -->
-            <div class="mb-4 bg-red-50 p-4 rounded-xl border border-red-200 text-center shadow-sm">
-                <h4 class="text-red-600 font-bold mb-2"><i class="fas fa-exclamation-triangle"></i> Công cụ làm sạch kho (Tạm thời)</h4>
-                <button onclick="nukeEverything()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition w-full md:w-auto">
-                    <i class="fas fa-bomb mr-2"></i> Xóa Sạch Toàn Bộ 100% Giày
-                </button>
-                <p class="text-xs text-red-500 mt-2 font-medium">Lưu ý: Nút này quét và xóa toàn bộ giày ở TẤT CẢ các size cùng lúc.</p>
-            </div>
 
             <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 mb-4 flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
                 <div class="flex items-center gap-2 w-full md:w-auto">
@@ -184,13 +176,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, writeBatch, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // FIREBASE CONFIG
-        const fbP1 = "AIzaSyCVAm"; const fbP2 = "JO1KViXVg3"; const fbP3 = "kizelTp6CZ"; const fbP4 = "AFmJLkKiM";
+        // FIREBASE CONFIG BÉ XÍU (Đồng bộ với index.html)
         const firebaseConfig = {
-            apiKey: fbP1 + fbP2 + fbP3 + fbP4,
-            authDomain: "donggia-8ef8e.firebaseapp.com",
-            projectId: "donggia-8ef8e",
-            storageBucket: "donggia-8ef8e.firebasestorage.app"
+            apiKey: "AIzaSyCQczIrVe39Hs2d1bCt4OUgnOHK8NJFBq8",
+            authDomain: "tiemgiaybexiu-c532a.firebaseapp.com",
+            projectId: "tiemgiaybexiu-c532a",
+            storageBucket: "tiemgiaybexiu-c532a.firebasestorage.app",
+            messagingSenderId: "499321303408",
+            appId: "1:499321303408:web:141656acab5eaf5ad95fb5"
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -201,7 +194,6 @@
 
         let allProductsRaw = [];
 
-        // HÀM TẠO CHỮ KÝ BẢO MẬT CHO IMAGEKIT
         async function generateIKAuth() {
             const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             const expire = Math.floor(Date.now() / 1000) + 60 * 30;
@@ -222,7 +214,6 @@
             };
         }
 
-        // HỆ THỐNG DIALOG
         window.showAlert = function(msg) {
             document.getElementById('dialogMessage').innerText = msg;
             document.getElementById('dialogButtons').innerHTML = `<button onclick="closeDialog()" class="px-6 py-2 bg-pink-600 text-white font-bold rounded-xl hover:bg-pink-700 transition w-full">OK</button>`;
@@ -240,7 +231,6 @@
         window.closeDialog = function() { document.getElementById('customDialog').classList.add('hidden'); }
         window.executeConfirm = function() { closeDialog(); if(window.currentConfirmCallback) window.currentConfirmCallback(); }
 
-        // LOADING OVERLAY
         window.showLoading = function(text) {
             document.getElementById('loadingText').innerText = text;
             document.getElementById('loadingOverlay').classList.remove('hidden');
@@ -251,7 +241,6 @@
             document.getElementById('loadingOverlay').classList.remove('flex');
         }
 
-        // ĐĂNG NHẬP
         window.checkLogin = function() {
             if(document.getElementById('passCode').value === '3119') {
                 document.getElementById('loginSection').classList.add('hidden');
@@ -319,7 +308,6 @@
             document.getElementById('btnRemoveImg').classList.add('hidden');
         }
 
-        // --- HÀM NÉN ẢNH (GIỮ NGUYÊN TỈ LỆ) & TẢI LÊN IMAGEKIT ---
         window.uploadProduct = async function() {
             const sizeInput = document.querySelector('input[name="size"]:checked');
             const price = parseInt(document.getElementById('shoePrice').value);
@@ -336,7 +324,6 @@
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-                        // Nén ảnh giữ nguyên tỉ lệ, Max dimension = 1000px
                         const MAX_DIMENSION = 1000;
                         let width = img.width;
                         let height = img.height;
@@ -359,12 +346,10 @@
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
 
-                        // Xuất Blob JPEG chất lượng 0.8
                         canvas.toBlob(async (blob) => {
                             try {
                                 const auth = await generateIKAuth();
                                 const formData = new FormData();
-                                // Đặt tên file ngẫu nhiên vì đã bỏ mã giày
                                 const fileName = "bx_" + Date.now() + Math.random().toString(36).substring(7) + ".jpg";
 
                                 formData.append("file", blob);
@@ -383,7 +368,6 @@
                                 if(!res.ok) throw new Error("ImageKit từ chối tải ảnh");
                                 const ikData = await res.json();
 
-                                // Lưu vào Firestore (không lưu mã giày nữa)
                                 await addDoc(collection(db, "products"), {
                                     size: sizeInput.value, 
                                     price: price,
@@ -430,7 +414,6 @@
             return new Date(val).getTime() || 0;
         };
 
-        // --- KHO HÀNG ---
         function fetchInventoryData() {
             onSnapshot(collection(db, "products"), (snapshot) => {
                 allProductsRaw = [];
@@ -493,7 +476,6 @@
             window.updateSelectedCount();
         }
 
-        // XÓA ẢNH TRÊN CẢ FIREBASE VÀ IMAGEKIT
         window.deleteIKFile = async function(fileId) {
             if(!fileId) return;
             try {
@@ -524,12 +506,10 @@
                         const id = checkedBoxes[i].value;
                         const p = allProductsRaw.find(x => x.id === id);
                         
-                        // Xóa ngầm ảnh trên ImageKit (không chờ để tránh kẹt mạng)
                         if(p && p.ikFileId) {
                             window.deleteIKFile(p.ikFileId).catch(()=>{});
                         }
                         
-                        // Xóa trực tiếp ngay trên Firebase
                         await deleteDoc(doc(db, "products", id));
                         count++;
                         
