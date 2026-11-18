@@ -23,10 +23,11 @@
 </head>
 <body class="bg-gray-50 text-gray-800 pb-20">
 
-    <!-- Custom Confirm / Alert Dialog -->
+    <!-- Custom Confirm / Alert / Prompt Dialog -->
     <div id="customDialog" class="fixed inset-0 bg-black/60 z-[200] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl text-center">
-            <h3 id="dialogMessage" class="text-gray-800 font-bold text-sm mb-6">Message</h3>
+            <h3 id="dialogMessage" class="text-gray-800 font-bold text-sm mb-4">Message</h3>
+            <input type="password" id="dialogInput" class="hidden w-full text-center p-2.5 border-2 border-gray-200 rounded-lg mb-5 font-bold tracking-widest outline-none focus:border-pink-500 transition" placeholder="Nhập mã pin...">
             <div id="dialogButtons" class="flex gap-3 justify-center"></div>
         </div>
     </div>
@@ -90,7 +91,7 @@
 
                         <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-amber-100 transition" onclick="toggleSpecialBrand()">
                             <input type="checkbox" id="isSpecialBrand" class="w-5 h-5 text-amber-600 rounded pointer-events-none">
-                            <label class="font-bold text-sm text-amber-800 pointer-events-none">🌟 Hàng Vans/Converse</label>
+                            <label class="font-bold text-sm text-amber-800 pointer-events-none">🌟 Hàng Vans/Converse/Jordan</label>
                         </div>
 
                         <div>
@@ -99,7 +100,7 @@
                                 <input type="number" id="shoePrice" class="w-full p-2.5 border border-gray-300 rounded-lg font-black bg-gray-100 text-lg text-pink-600 outline-none" readonly>
                                 <span class="absolute right-4 top-2.5 font-bold text-gray-400">VNĐ</span>
                             </div>
-                            <p class="text-[11px] text-gray-500 mt-1.5 font-semibold">≤35.5 (180k - CV 230k) | 36-36.5 (230k - CV 260k) | 37-39.5 (260k - CV 320k) | ≥40 (380k)</p>
+                            <p class="text-[11px] text-gray-500 mt-1.5 font-semibold">≤35 (180k - Đặc biệt 250k) | 36-37 (230k - Đặc biệt 260k) | 38-39 (260k - Đặc biệt 320k) | ≥40 (380k)</p>
                         </div>
 
                         <button id="btnUpload" onclick="uploadProduct()" class="w-full bg-black hover:bg-gray-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition mt-4 flex items-center justify-center gap-2">
@@ -122,8 +123,14 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
                     <button onclick="selectAllBulk()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold py-2 px-3 rounded-lg transition">Chọn tất cả</button>
+                    <button id="btn-download-bulk" onclick="downloadSelectedBulk()" class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1">
+                        <i class="fas fa-download"></i> Tải <span id="downloadCount" class="mx-0.5">0</span>
+                    </button>
                     <button id="btn-delete-bulk" onclick="deleteSelectedBulk()" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1">
                         <i class="fas fa-trash-alt"></i> Xóa <span id="deleteCount" class="mx-0.5">0</span>
+                    </button>
+                    <button onclick="nukeEverythingWithPassword()" class="bg-black hover:bg-gray-800 text-white text-xs font-bold py-2 px-3 rounded-lg shadow transition flex items-center justify-center gap-1 ml-1 sm:ml-2">
+                        <i class="fas fa-skull"></i> Xóa Toàn Bộ
                     </button>
                 </div>
             </div>
@@ -216,17 +223,32 @@
 
         window.showAlert = function(msg) {
             document.getElementById('dialogMessage').innerText = msg;
+            document.getElementById('dialogInput').classList.add('hidden');
             document.getElementById('dialogButtons').innerHTML = `<button onclick="closeDialog()" class="px-6 py-2 bg-pink-600 text-white font-bold rounded-xl hover:bg-pink-700 transition w-full">OK</button>`;
             document.getElementById('customDialog').classList.remove('hidden');
         }
         window.showConfirm = function(msg, onConfirm) {
             document.getElementById('dialogMessage').innerText = msg;
+            document.getElementById('dialogInput').classList.add('hidden');
             window.currentConfirmCallback = onConfirm;
             document.getElementById('dialogButtons').innerHTML = `
                 <button onclick="closeDialog()" class="flex-1 px-5 py-2 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Hủy</button>
                 <button onclick="executeConfirm()" class="flex-1 px-5 py-2 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition">Đồng ý</button>
             `;
             document.getElementById('customDialog').classList.remove('hidden');
+        }
+        window.showPrompt = function(msg, onConfirm) {
+            document.getElementById('dialogMessage').innerText = msg;
+            const input = document.getElementById('dialogInput');
+            input.value = '';
+            input.classList.remove('hidden');
+            window.currentConfirmCallback = () => { onConfirm(input.value); };
+            document.getElementById('dialogButtons').innerHTML = `
+                <button onclick="closeDialog()" class="flex-1 px-5 py-2 bg-gray-200 text-gray-800 font-bold rounded-xl hover:bg-gray-300 transition">Hủy</button>
+                <button onclick="executeConfirm()" class="flex-1 px-5 py-2 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition">Xác nhận</button>
+            `;
+            document.getElementById('customDialog').classList.remove('hidden');
+            input.focus();
         }
         window.closeDialog = function() { document.getElementById('customDialog').classList.add('hidden'); }
         window.executeConfirm = function() { closeDialog(); if(window.currentConfirmCallback) window.currentConfirmCallback(); }
@@ -279,9 +301,9 @@
             const priceInput = document.getElementById('shoePrice');
             if (sizeInput) {
                 let sNum = parseFloat(sizeInput.value);
-                if (sizeInput.value === 'Kid' || sNum <= 35.5) priceInput.value = isSpecial ? 230000 : 180000;
-                else if (sNum === 36 || sNum === 36.5) priceInput.value = isSpecial ? 260000 : 230000;
-                else if (sNum >= 37 && sNum <= 39.5) priceInput.value = isSpecial ? 320000 : 260000;
+                if (sizeInput.value === 'Kid' || sNum <= 35.5) priceInput.value = isSpecial ? 250000 : 180000;
+                else if (sNum >= 36 && sNum <= 37.5) priceInput.value = isSpecial ? 260000 : 230000;
+                else if (sNum >= 38 && sNum <= 39.5) priceInput.value = isSpecial ? 320000 : 260000;
                 else if (sNum >= 40) priceInput.value = 380000;
             } else priceInput.value = 0;
         }
@@ -448,6 +470,12 @@
                             <input type="checkbox" class="bulk-cb bg-white border-2 shadow" 
                                 value="${p.id}" onchange="updateSelectedCount()">
                         </div>
+                        
+                        <!-- Nút Tải Ảnh (Hiện khi hover) -->
+                        <button onclick="downloadImageWithWatermark('${p.img}', '${p.size}', ${p.price}, 'Giay_BeXiu_Size${p.size}_${p.id}.jpg')" class="absolute top-3 right-3 z-10 bg-white/90 text-gray-600 hover:text-blue-600 hover:bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition opacity-0 group-hover:opacity-100" title="Tải ảnh về có Watermark">
+                            <i class="fas fa-download text-sm"></i>
+                        </button>
+
                         <div>
                             <div class="w-full h-32 bg-gray-50 rounded-lg overflow-hidden mb-2 relative cursor-pointer" onclick="openZoom('${p.img}')">
                                 <img src="${p.img}" class="w-full h-full object-cover">
@@ -464,9 +492,120 @@
             window.updateSelectedCount(); 
         }
 
+        window.downloadImageWithWatermark = async function(url, size, price, fileName) {
+            try {
+                // ÉP IMAGEKIT TRẢ VỀ ẢNH SIÊU NÉT (Width: 2000px, Quality: 100%)
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.src = url + "?tr=w-2000,q-100"; 
+                
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                
+                // Vẽ ảnh gốc
+                ctx.drawImage(img, 0, 0);
+
+                // Cài đặt Watermark (Nhỏ gọn, sang trọng)
+                const text = `Size ${size} - ${Number(price).toLocaleString('vi-VN')}đ`;
+                // Kích thước chữ nhỏ lại cho tinh tế
+                const fontSize = Math.max(18, Math.floor(canvas.width / 35)); 
+                ctx.font = `600 ${fontSize}px Inter, sans-serif`;
+                
+                const paddingX = fontSize * 0.8;
+                const paddingY = fontSize * 0.5;
+                const textMetrics = ctx.measureText(text);
+                const textWidth = textMetrics.width;
+                const textHeight = fontSize;
+
+                // Vị trí: Ở trên cùng, căn giữa ảnh
+                const margin = Math.floor(canvas.width / 40); 
+                const boxWidth = textWidth + paddingX * 2;
+                const boxHeight = textHeight + paddingY * 2;
+                
+                const x = (canvas.width - boxWidth) / 2; // Căn giữa theo chiều ngang
+                const y = margin; // Nằm ở trên cao
+
+                // Vẽ nền xám đen mờ sang trọng
+                ctx.fillStyle = "rgba(40, 40, 40, 0.85)"; 
+                
+                // Vẽ khối bo góc nhẹ (radius = 6)
+                const radius = 6;
+                
+                ctx.beginPath();
+                ctx.moveTo(x + radius, y);
+                ctx.lineTo(x + boxWidth - radius, y);
+                ctx.quadraticCurveTo(x + boxWidth, y, x + boxWidth, y + radius);
+                ctx.lineTo(x + boxWidth, y + boxHeight - radius);
+                ctx.quadraticCurveTo(x + boxWidth, y + boxHeight, x + boxWidth - radius, y + boxHeight);
+                ctx.lineTo(x + radius, y + boxHeight);
+                ctx.quadraticCurveTo(x, y + boxHeight, x, y + boxHeight - radius);
+                ctx.lineTo(x, y + radius);
+                ctx.quadraticCurveTo(x, y, x + radius, y);
+                ctx.closePath();
+                ctx.fill();
+
+                // Vẽ chữ trắng
+                ctx.fillStyle = "white";
+                ctx.textBaseline = "top";
+                // Chỉnh nhẹ trục Y để text nằm trọn ở giữa background
+                ctx.fillText(text, x + paddingX, y + paddingY * 1.1);
+
+                // Tải xuống với chất lượng MAX (1.0) để không bị nén mất nét
+                canvas.toBlob((blob) => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                }, 'image/jpeg', 1.0); 
+                
+            } catch (error) {
+                console.error("Lỗi khi tải ảnh có watermark:", error);
+                window.open(url, '_blank'); // Fallback nếu lỗi CORS
+            }
+        }
+
+        window.downloadSelectedBulk = async function() {
+            const checkedBoxes = document.querySelectorAll('.bulk-cb:checked');
+            if (checkedBoxes.length === 0) return window.showAlert('Chưa chọn ảnh nào để tải!');
+            
+            window.showLoading(`Đang chuẩn bị tải ${checkedBoxes.length} ảnh...`);
+            let count = 0;
+            
+            for (let i = 0; i < checkedBoxes.length; i++) {
+                const id = checkedBoxes[i].value;
+                const p = allProductsRaw.find(x => x.id === id);
+                if (p) {
+                    await window.downloadImageWithWatermark(p.img, p.size, p.price, `Giay_BeXiu_Size${p.size}_${p.id}.jpg`);
+                    count++;
+                    document.getElementById('loadingText').innerText = `Đang tải & đóng dấu: ${count} / ${checkedBoxes.length} ảnh...`;
+                    
+                    // Thêm delay nhẹ (500ms) để trình duyệt không bị đứng hoặc chặn tải nhiều file cùng lúc
+                    await new Promise(r => setTimeout(r, 500)); 
+                }
+            }
+            
+            window.hideLoading();
+            
+            // Bỏ chọn sau khi tải xong
+            document.querySelectorAll('.bulk-cb').forEach(cb => cb.checked = false);
+            window.updateSelectedCount();
+        }
+
         window.updateSelectedCount = function() {
             const count = document.querySelectorAll('.bulk-cb:checked').length;
             document.getElementById('deleteCount').innerText = count;
+            document.getElementById('downloadCount').innerText = count;
         }
 
         window.selectAllBulk = function() {
@@ -528,6 +667,40 @@
             });
         }
 
+        // HÀM XÓA TOÀN BỘ KHO (YÊU CẦU MẬT KHẨU BẰNG DIALOG TÙY CHỈNH AN TOÀN)
+        window.nukeEverythingWithPassword = async function() {
+            if (allProductsRaw.length === 0) return window.showAlert("Kho đang trống, không có gì để xóa!");
+            
+            window.showPrompt("⚠️ CẢNH BÁO NGUY HIỂM!\nHành động này sẽ XÓA SẠCH 100% KHO HÀNG TRÊN MỌI KÊNH.\n\nVui lòng nhập mật khẩu (PIN) để xác nhận:", (pass) => {
+                if (pass !== "2812") {
+                    window.showAlert("Sai mật khẩu, hủy lệnh xóa!");
+                    return;
+                }
+
+                window.showConfirm(`XÓA VĨNH VIỄN TOÀN BỘ ${allProductsRaw.length} ĐÔI GIÀY?\nHành động này không thể hoàn tác!`, async () => {
+                    window.showLoading(`Đang hủy diệt ${allProductsRaw.length} sản phẩm...`);
+                    try {
+                        let count = 0;
+                        const total = allProductsRaw.length;
+                        for (let p of allProductsRaw) {
+                            if(p.ikFileId) {
+                                window.deleteIKFile(p.ikFileId).catch(()=>{});
+                            }
+                            await deleteDoc(doc(db, "products", p.id));
+                            count++;
+                            document.getElementById('loadingText').innerText = `Đang dọn dẹp: ${count} / ${total} đôi...`;
+                        }
+                        window.hideLoading();
+                        window.showAlert(`✅ ĐÃ LÀM SẠCH TOÀN BỘ KHO HÀNG!`);
+                        window.updateSelectedCount();
+                    } catch (error) {
+                        window.hideLoading();
+                        window.showAlert("Lỗi hệ thống khi xóa: " + error.message);
+                    }
+                });
+            });
+        }
+
         window.openEditModal = function(id, size, price) {
             document.getElementById('edit-id').value = id; 
             document.getElementById('edit-size').value = size; 
@@ -545,6 +718,17 @@
                 await updateDoc(doc(db, "products", id), { size: size, price: price });
                 window.closeEditModal(); window.showAlert('✅ Lưu thành công!');
             } catch (error) { window.showAlert('Lỗi: ' + error.message); }
+        }
+
+        // HÀM XÓA ĐƠN HÀNG ĐÃ FIX LỖI
+        window.deleteOrder = function(id) {
+            window.showConfirm('Chắc chắn xóa đơn này khỏi lịch sử?', async () => {
+                try {
+                    await deleteDoc(doc(db, "orders", id));
+                } catch (error) {
+                    window.showAlert("Lỗi khi xóa đơn: " + error.message);
+                }
+            });
         }
 
         window.loadOrders = function() {
@@ -568,7 +752,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center">
-                                <button onclick="deleteDoc(doc(db, 'orders', '${docSnap.id}'))" class="bg-red-50 text-red-500 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-100 w-full md:w-auto transition"><i class="fas fa-trash"></i> Xóa đơn</button>
+                                <button onclick="deleteOrder('${docSnap.id}')" class="bg-red-50 text-red-500 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-100 w-full md:w-auto transition"><i class="fas fa-trash"></i> Xóa đơn</button>
                             </div>
                         </div>
                     `;
