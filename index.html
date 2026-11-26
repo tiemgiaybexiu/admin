@@ -512,31 +512,45 @@
                 // Vẽ ảnh gốc
                 ctx.drawImage(img, 0, 0);
 
-                // Cài đặt Watermark (Nhỏ gọn, sang trọng)
-                const text = `Size ${size} - ${Number(price).toLocaleString('vi-VN')}đ`;
-                // Kích thước chữ nhỏ lại cho tinh tế
-                const fontSize = Math.max(18, Math.floor(canvas.width / 35)); 
-                ctx.font = `600 ${fontSize}px Inter, sans-serif`;
+                // Cài đặt Watermark siêu to, đậm nét kèm dòng giày chính hãng nổi bật ở dưới
+                const mainText = `Size ${size} - ${Number(price).toLocaleString('vi-VN')}đ`;
+                const subText = "✓ GIÀY CHÍNH HÃNG";
                 
-                const paddingX = fontSize * 0.8;
-                const paddingY = fontSize * 0.5;
-                const textMetrics = ctx.measureText(text);
-                const textWidth = textMetrics.width;
-                const textHeight = fontSize;
+                // Khởi tạo cỡ chữ lớn và tự động căn chỉnh tối đa 86% chiều rộng ảnh để không bị tràn viền
+                let fontSize = Math.max(50, Math.floor(canvas.width / 11));
+                let subFontSize = Math.max(24, Math.floor(fontSize * 0.44));
+                const maxBoxWidth = canvas.width * 0.86;
 
-                // Vị trí: Ở trên cùng, căn giữa ảnh
-                const margin = Math.floor(canvas.width / 40); 
-                const boxWidth = textWidth + paddingX * 2;
-                const boxHeight = textHeight + paddingY * 2;
-                
-                const x = (canvas.width - boxWidth) / 2; // Căn giữa theo chiều ngang
-                const y = margin; // Nằm ở trên cao
+                while (fontSize > 30) {
+                    ctx.font = `800 ${fontSize}px Inter, Arial, sans-serif`;
+                    const mainW = ctx.measureText(mainText).width;
+                    ctx.font = `700 ${subFontSize}px Inter, Arial, sans-serif`;
+                    const subW = ctx.measureText(subText).width;
 
-                // Vẽ nền xám đen mờ sang trọng
-                ctx.fillStyle = "rgba(40, 40, 40, 0.85)"; 
+                    if (Math.max(mainW, subW) + fontSize * 1.4 <= maxBoxWidth) break;
+                    fontSize -= 2;
+                    subFontSize = Math.max(22, Math.floor(fontSize * 0.44));
+                }
+
+                ctx.font = `800 ${fontSize}px Inter, Arial, sans-serif`;
+                const mainWidth = ctx.measureText(mainText).width;
+                ctx.font = `700 ${subFontSize}px Inter, Arial, sans-serif`;
+                const subWidth = ctx.measureText(subText).width;
+
+                const paddingX = fontSize * 0.7;
+                const paddingY = fontSize * 0.36;
+                const lineGap = fontSize * 0.28;
+
+                // Tính kích thước khung 2 dòng và đặt tâm nằm đúng phần thứ 2 (chia dọc 9 phần)
+                const boxWidth = Math.max(mainWidth, subWidth) + paddingX * 2;
+                const boxHeight = fontSize + lineGap + subFontSize + paddingY * 2;
                 
-                // Vẽ khối bo góc nhẹ (radius = 6)
-                const radius = 6;
+                const x = (canvas.width - boxWidth) / 2;
+                const y = Math.max(canvas.height * 0.04, (canvas.height / 9) * 1.5 - boxHeight / 2);
+
+                // Vẽ nền xám đen mờ sang trọng kèm viền ánh kim mảnh nổi bật
+                ctx.fillStyle = "rgba(28, 28, 28, 0.88)";
+                const radius = Math.floor(fontSize * 0.26);
                 
                 ctx.beginPath();
                 ctx.moveTo(x + radius, y);
@@ -551,11 +565,23 @@
                 ctx.closePath();
                 ctx.fill();
 
-                // Vẽ chữ trắng
-                ctx.fillStyle = "white";
-                ctx.textBaseline = "top";
-                // Chỉnh nhẹ trục Y để text nằm trọn ở giữa background
-                ctx.fillText(text, x + paddingX, y + paddingY * 1.1);
+                ctx.strokeStyle = "rgba(251, 191, 36, 0.5)";
+                ctx.lineWidth = Math.max(2, Math.floor(canvas.width / 550));
+                ctx.stroke();
+
+                // Vẽ dòng 1: Size & Giá màu trắng đậm
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = `800 ${fontSize}px Inter, Arial, sans-serif`;
+                ctx.fillStyle = "#ffffff";
+                const mainCenterY = y + paddingY + fontSize * 0.52;
+                ctx.fillText(mainText, x + boxWidth / 2, mainCenterY);
+
+                // Vẽ dòng 2: Cam kết chính hãng 100% màu vàng ánh kim nổi bật
+                ctx.font = `700 ${subFontSize}px Inter, Arial, sans-serif`;
+                ctx.fillStyle = "#fbbf24";
+                const subCenterY = y + paddingY + fontSize + lineGap + subFontSize * 0.5;
+                ctx.fillText(subText, x + boxWidth / 2, subCenterY);
 
                 // Tải xuống với chất lượng MAX (1.0) để không bị nén mất nét
                 canvas.toBlob((blob) => {
